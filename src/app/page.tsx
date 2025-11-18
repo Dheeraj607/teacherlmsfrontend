@@ -1,103 +1,163 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import api from "@/utils/axiosInstance";
 
-export default function Home() {
+interface Package {
+  id: number;
+  name: string;
+  description: string;
+  imageName?: string;
+  points?: string[];
+  pricing?: {
+    rate?: number | string;
+    discount?: number | string;
+    finalPrice?: number | string;
+    fromDate?: string;
+    toDate?: string;
+  };
+}
+
+export default function PackageListPage() {
+  const [packages, setPackages] = useState<Package[]>([]);
+  const router = useRouter();
+
+  // ------------------------------
+  // Helper Functions
+  // ------------------------------
+  const getStatus = (fromDate?: string, toDate?: string) => {
+    if (!fromDate || !toDate) return "Inactive";
+    const now = new Date();
+    const start = new Date(fromDate);
+    const end = new Date(toDate);
+    return now >= start && now <= end ? "Active" : "Inactive";
+  };
+
+  const formatPrice = (price?: number | string | null) => {
+    if (price === null || price === undefined) return "0.00";
+    const num = Number(price);
+    if (isNaN(num)) return "0.00";
+    return num.toFixed(2);
+  };
+
+  const formatDate = (date?: string) => (date ? new Date(date).toLocaleDateString() : "-");
+
+  // ------------------------------
+  // Fetch Packages
+  // ------------------------------
+  useEffect(() => {
+    const fetchPackages = async () => {
+      try {
+        const res = await api.get("/admin-packages");
+        setPackages(res.data);
+      } catch (err) {
+        console.error("Error fetching packages:", err);
+      }
+    };
+    fetchPackages();
+  }, []);
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center py-10">
+      <h1 className="text-3xl font-bold mb-8 text-gray-900">🎁 Available Packages</h1>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl px-6">
+        {packages.length === 0 ? (
+          <p className="text-gray-500 text-center col-span-full">No packages available.</p>
+        ) : (
+          packages.map((pkg) => {
+            const imageUrl = pkg.imageName
+              ? `${process.env.NEXT_PUBLIC_API_URL}/uploads/adminpackage/${pkg.imageName.replace(/\\/g, "/")}`
+              : "/placeholder.png";
+
+            // Read pricing directly
+            const finalPrice = pkg.pricing?.finalPrice ?? pkg.pricing?.rate ?? 0;
+            const originalRate = pkg.pricing?.rate ?? 0;
+            const discountValue = pkg.pricing?.discount ?? 0;
+            const status = getStatus(pkg.pricing?.fromDate, pkg.pricing?.toDate);
+
+            return (
+              <div key={pkg.id} className="bg-white rounded-2xl shadow-md hover:shadow-lg transition p-5 flex flex-col">
+                {/* Cover Image */}
+                <div className="relative w-full h-56 mb-4 overflow-hidden rounded-xl">
+                  <Image src={imageUrl} alt={pkg.name} fill className="object-cover" unoptimized />
+                </div>
+
+                {/* Status Badge */}
+                <div className="flex justify-end mb-2">
+                  <span
+                    className={`px-3 py-1 text-xs font-semibold rounded-full ${
+                      status === "Active" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                    }`}
+                  >
+                    {status === "Active" ? "🟢 Active" : "🔴 Inactive"}
+                  </span>
+                </div>
+
+                {/* Package Details */}
+                <h2 className="text-lg font-semibold text-gray-800 mb-2">{pkg.name}</h2>
+                <p className="text-gray-600 text-sm mb-3">
+                  {pkg.description.length > 100 ? pkg.description.slice(0, 100) + "..." : pkg.description}
+                </p>
+
+                {/* Points */}
+                {pkg.points && pkg.points.length > 0 && (
+                  <div className="mb-2">
+                    <span className="text-gray-600 text-sm font-medium">Points: </span>
+                    <ul className="list-disc list-inside text-gray-700 text-sm">
+                      {pkg.points.map((p, idx) => (
+                        <li key={idx}>{p}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Offer Dates */}
+                <p className="text-sm text-gray-500 mb-1">
+                  Offer valid from{" "}
+                  <span className="font-medium text-gray-700">{formatDate(pkg.pricing?.fromDate)}</span>{" "}
+                  to{" "}
+                  <span className="font-medium text-gray-700">{formatDate(pkg.pricing?.toDate)}</span>
+                </p>
+
+                {/* Pricing */}
+                <div className="flex items-center gap-2 mt-2 mb-4">
+                  <span className="text-green-600 font-bold text-lg">₹{formatPrice(finalPrice)}</span>
+                  {Number(discountValue) > 0 && (
+                    <>
+                      <span className="text-gray-400 line-through text-sm">₹{formatPrice(originalRate)}</span>
+                      <span className="bg-red-100 text-red-600 text-xs font-semibold px-2 py-1 rounded-md">
+                        {discountValue}% OFF
+                      </span>
+                    </>
+                  )}
+                </div>
+
+                {/* Purchase Button */}
+                <button
+                  onClick={() => {
+                    localStorage.setItem(
+                      "selectedPackage",
+                      JSON.stringify({ id: pkg.id, name: pkg.name, price: formatPrice(finalPrice) })
+                    );
+                    router.push("/registerlogin");
+                  }}
+                  className={`mt-auto w-full font-medium py-2 rounded-lg transition ${
+                    status === "Active"
+                      ? "bg-blue-600 hover:bg-blue-700 text-white"
+                      : "bg-gray-400 text-gray-200 cursor-not-allowed"
+                  }`}
+                  disabled={status !== "Active"}
+                >
+                  {status === "Active" ? "Purchase" : "Unavailable"}
+                </button>
+              </div>
+            );
+          })
+        )}
+      </div>
     </div>
   );
 }
