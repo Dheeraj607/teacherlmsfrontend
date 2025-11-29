@@ -4,10 +4,10 @@ import React, { useState } from "react";
 import api from "@/utils/axiosInstance";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useRouter } from "next/navigation"; // ✅ correct import
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
-  const router = useRouter(); // ✅ define router here
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -22,18 +22,48 @@ export default function LoginForm() {
 
       console.log("🟢 Login response:", data);
 
+      // Phone verification
       if (data.status === "PHONE_NOT_VERIFIED") {
         localStorage.setItem("pendingPhone", data.phone);
         localStorage.setItem("pendingEmail", email);
-        router.push("/verify/otp"); // ✅ safe to use now
-      } else if (data.status === "EMAIL_NOT_VERIFIED") {
+        await api.post("/users/resend-otp", { phone: data.phone });
+        alert("Phone not verified. OTP sent.");
+        router.push(`/verify-otp?phone=${encodeURIComponent(data.phone)}`);
+        return;
+      }
+
+      // Email verification (like OTP flow)
+      if (data.status === "EMAIL_NOT_VERIFIED") {
         localStorage.setItem("pendingEmail", data.email);
-        router.push("/verify/email"); // ✅ safe to use now
-      } else if (data.status === "SUCCESS") {
+
+        // Optional: Get stored package ID from previous registration
+        const selectedPackageId = localStorage.getItem("selectedPackageId");
+
+        // Redirect to verify-email page with email + packageId if exists
+        const url = selectedPackageId
+          ? `/verify-email?email=${encodeURIComponent(data.email)}&packageId=${selectedPackageId}`
+          : `/verify-email?email=${encodeURIComponent(data.email)}`;
+
+        alert("Email not verified. Redirecting to verification page.");
+        router.push(url);
+        return;
+      }
+
+      // Success: all verifications passed
+      if (data.status === "SUCCESS") {
+        // Payment status handled via backend redirectStatus
+        if (data.redirectStatus === "PAYMENT_PENDING") {
+          alert("Payment not completed yet. Redirecting to payment page.");
+          router.push("/payment-requests");
+          return;
+        }
+
+        // ✅ All checks passed → generate and store tokens
         localStorage.setItem("accessToken", data.accessToken);
         localStorage.setItem("refreshToken", data.refreshToken);
         toast.success("Login successful!");
-        window.location.href = "/dashboard"; // ✅ or router.push("/dashboard");
+        alert("Payment completed. Redirecting to dashboard.");
+        router.push("/dashboard");
       }
     } catch (err: any) {
       console.error("❌ Login failed:", err.response?.data || err);

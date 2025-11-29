@@ -38,21 +38,22 @@ export default function EditPackagePage() {
     );
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center py-10 px-4">
+    <div className="min-h-screen bg-gray-50 flex flex-col items-start py-10 px-10">
+
       <div className="w-full max-w-3xl bg-white shadow-lg rounded-2xl p-8">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
-            ✏️ Edit Package
-          </h1>
-          <Button
+          <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+             Edit Package
+          </h2>
+          {/* <Button
             variant="outline"
             className="flex items-center gap-2"
             onClick={handleCancel}
           >
             <ArrowLeft className="w-4 h-4" />
             Back
-          </Button>
+          </Button> */}
         </div>
 
         {/* Form */}

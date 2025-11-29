@@ -1,0 +1,131 @@
+body{font-family: "Poppins", sans-serif; font-size:14px; }
+
+.navbar-brand{width: 150px;}
+h1{color: #000; font-weight: 700;}
+p{line-height: 24px; color: #3a3b3a;}
+
+.relative{position: relative;}
+.form-label{margin-bottom: 0.1rem; font-size: 13px;}
+.form-control, .form-select{font-size: 13px; border-color: #cbcbd7; border-radius: 0.5rem; font-weight: 300;}
+
+.btn{border-radius: 40px;}
+.btn.btn-primary {
+  background: #5444c9 !important;
+  border-color: #5444c9 !important;
+  color: #fff !important;
+  border-radius: 9999px !important; /* keeps oval shape */
+  padding: 0.25rem 1rem !important; /* smaller vertical & horizontal padding */
+  font-size: 0.875rem !important; /* optional: smaller text */
+}
+
+
+.btn.btn-secondary {
+  background: #6c757d; /* or your preferred gray */
+  border-color: #6c757d;
+  color: #fff;
+  border-radius: 9999px; /* makes it fully rounded / oval */
+   padding: 0.25rem 1rem !important;
+  font-size: 0.875rem !important; /* adjust vertical and horizontal padding */
+}
+
+/* styles.css */
+.btn.btn-danger {
+  background: #dc3545; /* Bootstrap's default danger color */
+  border-color: #dc3545;
+  color: #fff;
+  border-radius: 9999px; /* makes it fully rounded / oval */
+   padding: 0.25rem 1rem !important;
+  font-size: 0.875rem !important; /* adjust vertical and horizontal padding */
+}
+
+
+.btn-primary:hover{background: #3220b7; border-color: #3220b7; color: #fff;}
+
+.table-primary{background: #5444c9!important; --bs-table-bg:#5444c9!important;}
+.table-primary tr th {--bs-table-color:#fff!important; color: #fff;}
+
+.full-height {height: 100vh;}
+.loginpage, .registerpage{padding-top: 2rem; padding-bottom: 2rem;}
+.loginarea{padding: 0 3rem;}
+.countinuediv {border-bottom: 1px solid #d4d2dd; text-align: center; position: relative; margin-top: 40px; margin-bottom: 40px;}
+.countinuediv > div{position: absolute; width: 100%; margin-top: -12px;}
+.countinuediv > div p span{background: #fff; padding: 5px 10px;}
+.loginBg {background-image: url(/images/loginBg.jpg); background-size: cover; background-position: center; border-radius: 1rem}
+
+.registrationform {
+    background: linear-gradient(to bottom,  #13e5da 1%,#464cc8 54%,#9428cc 100%); border-radius: 1rem;
+    color: white;
+    display: flex;
+    align-items: center;
+}
+.image-box {
+    background-image: url(/images/registerImg.jpg);
+    background-size: cover;
+    background-position: center;
+    border-radius: 12px;
+    height: 360px;
+}
+.registrationform .form-control{background: transparent; border-color: #fff; color: #fff;}
+.registrationform input::placeholder{color: #e5e5e5;}
+
+.sidebar {
+            min-width: 230px;
+            max-width: 230px;
+            background: #2957a4;
+            color: #fff;
+            height: 100vh;
+        }
+        .sidebar a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 10px 20px;
+            display: block;
+        }
+        .sidebar a:hover {
+            background: #1b396b;
+            color: #fff;
+        }
+        .sidebar h2 {
+        font-size: 26px;
+        font-weight: 700;
+        margin: 0;
+        padding: 16px 20px;
+        border-bottom: 2px solid #ffffff; /* ← White line */
+        color: #fff;
+}
+
+        .content-area {
+            padding: 20px;
+        }
+
+
+
+@media only screen and (min-width: 1400px) {
+
+}
+
+@media only screen and (max-width: 768px) {
+
+}
+
+@media only screen and (max-width: 600px) {
+.full-height {height: 100%!important;}
+html, body{overflow: inherit!important;}
+}
+
+
+/* styles.css or global.css */
+.btn-oval {
+  background-color: #16a34a; /* green */
+  color: white;
+  border-radius: 50px;       /* fully rounded for oval */
+  padding: 0.5rem 1.5rem;    /* vertical 0.5rem, horizontal 1.5rem */
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-oval:hover {
+  background-color: #15803d; /* darker green on hover */
+}

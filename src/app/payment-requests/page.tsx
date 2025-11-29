@@ -1,116 +1,135 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useRouter } from "next/navigation";
 
-const API_URL =
-  process.env.NEXT_PUBLIC_API_URL_TUNNEL ||
-  process.env.NEXT_PUBLIC_API_URL_LOCAL ||
-  "http://localhost:3000";
+const API_URL = process.env.NEXT_PUBLIC_API_URL_LOCAL || "http://localhost:3000";
 
-export default function PaymentRequestPage() {
-  const [name, setName] = useState("");
+export default function TeacherPaymentRequestPage() {
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [amount, setAmount] = useState<string>("");
-  const [purpose, setPurpose] = useState("");
-  const [packageId, setPackageId] = useState<number | null>(null);
+  const [enrollmentData, setEnrollmentData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const router = useRouter();
 
-  useEffect(() => {
-    console.log("🔍 Fetching package & registration data...");
+  // Fetch teacher enrollment by email
+  const fetchEnrollment = async (email: string) => {
+    if (!email) return toast.warn("Please enter an email");
 
     try {
-      // ✅ Get stored package
-      const pkgStr = localStorage.getItem("selectedPackage");
-      if (pkgStr) {
-        const pkg = JSON.parse(pkgStr);
-        console.log("📦 Selected package:", pkg);
+      setLoading(true);
+      const res = await fetch(
+        `${API_URL}/teacher-enrollment/by-email?email=${encodeURIComponent(email)}`
+      );
+      if (!res.ok) throw new Error("Failed to fetch enrollment");
 
-        setPackageId(pkg.id || null);
-        setPurpose(pkg.name || "");
-        setAmount(String(pkg.price || pkg.rate || pkg.specialPrice || ""));
+      const data = await res.json();
+      console.log("Fetched teacher enrollment data:", data);
+
+      if (data) {
+        // Normalize teacher enrollment ID for consistent usage
+        const enrollmentId =
+          data.teacherAdminPackageId ??
+          data.teacher_admin_package_id ??
+          data.enrollmentId ??
+          data.selectedPackage?.id ??
+          null;
+
+        // Fetch the **final price** from selectedPackage or fallback
+        const finalPrice =
+          data.selectedPackage?.finalPrice ??
+          data.packagePrice ?? // fallback
+          0;
+
+        const normalized = { ...data, teacherAdminPackageId: enrollmentId, packagePrice: finalPrice };
+        setEnrollmentData(normalized);
+
+        // Persist paymentData for downstream pages
+        const paymentDataObj = {
+          teacher: {
+            name: data.teacherName ?? data.teacher?.name ?? "",
+            email: data.teacherEmail ?? data.teacher?.email ?? "",
+            phone: data.teacherPhone ?? data.teacher?.phone ?? "",
+            ...(data.teacher && typeof data.teacher === "object" ? data.teacher : {}),
+          },
+          selectedPackage: {
+            id: data.selectedPackage?.id ?? data.packageId ?? null,
+            name: data.packageName ?? data.selectedPackage?.name ?? "",
+            finalPrice: finalPrice,
+            description: data.selectedPackage?.description ?? "",
+            enrollmentId: enrollmentId,
+          },
+          teacherAdminPackageId: enrollmentId,
+          raw: data,
+        };
+        localStorage.setItem("paymentData", JSON.stringify(paymentDataObj));
+
+        toast.success("✅ Enrollment data fetched!");
       } else {
-        console.warn("⚠️ No selectedPackage found in localStorage");
-      }
-
-      // ✅ Get registration details
-      const regStr = localStorage.getItem("registrationData");
-      if (regStr) {
-        const reg = JSON.parse(regStr);
-        console.log("👤 Registration data:", reg);
-
-        setName(reg.name || "");
-        setEmail(reg.email || "");
-        setPhone(reg.phone || "");
-      } else {
-        console.warn("⚠️ No registrationData found in localStorage");
+        setEnrollmentData(null);
+        toast.info("No enrollment found for this email");
       }
     } catch (err) {
-      console.error("❌ Error reading localStorage:", err);
+      console.error(err);
+      toast.error("❌ Error fetching enrollment");
     } finally {
-      setIsLoaded(true);
+      setLoading(false);
     }
-  }, []);
+  };
 
+  // Create payment request
   const handlePay = async () => {
-    if (!amount || Number(amount) <= 0) {
-      toast.error("Please enter a valid amount");
+    if (!enrollmentData) return toast.error("❌ No enrollment data available");
+
+    const teacherAdminPackageId = enrollmentData.teacherAdminPackageId;
+    if (!teacherAdminPackageId) {
+      toast.error("❌ Teacher enrollment ID not found");
+      console.error("Enrollment data missing ID:", enrollmentData);
       return;
     }
 
-    if (!packageId) {
-      toast.error("No package selected");
+    const amount = Number(enrollmentData.packagePrice);
+    if (!amount || amount <= 0) {
+      toast.error("❌ Invalid package amount");
       return;
     }
 
-    setLoading(true);
+    const body = {
+      studentTeacherPackageId: teacherAdminPackageId, // for backend reference
+      externalId: Number(teacherAdminPackageId),
+      amount,
+      gst: 0,
+      basicamount: amount,
+      successUrl: window.location.origin + "/payment-success",
+      failureUrl: window.location.origin + "/payment-failed",
+      purpose: enrollmentData.packageName,
+      vendor_name: "Vendor A",
+      vendor_address: "123 Business Street",
+      vendor_email: "vendor@example.com",
+      vendor_contact_no: "9876543210",
+      vendor_gst_no: "22ABCDE1234F2Z5",
+      customer_name: enrollmentData.teacherName,
+      customer_email: enrollmentData.teacherEmail,
+      customer_phone: enrollmentData.teacherPhone,
+      customer_address: "",
+      type: "teacher",
+    };
 
-const paymentData = {
-  externalId: `PKG_${packageId}_${Date.now()}`,
-  amount: Math.round(Number(amount) * 100) / 100,  // ✅ Fix decimals
-  gst: 0,
-  basicamount: Math.round(Number(amount) * 100) / 100,
-  successUrl: `${window.location.origin}/payment-success`,
-  failureUrl: `${window.location.origin}/payment-failed`,
-  purpose,
-  vendor_name: "Vendor A",
-  vendor_address: "123 Business Street",
-  vendor_email: "vendor@example.com",
-  vendor_contact_no: "9876543210",
-  vendor_gst_no: "22ABCDE1234F2Z5",
-  customer_name: name,
-  customer_email: email,
-  customer_phone: phone,
-  customer_address: "",
-};
-
-
-    console.log("💳 Payment payload:", paymentData);
+    console.log("Creating payment order:", body);
 
     try {
+      setLoading(true);
       const res = await fetch(`${API_URL}/payment-requests/order`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(paymentData),
+        body: JSON.stringify(body),
       });
 
       const data = await res.json();
-      console.log("💰 Payment order response:", data);
+      console.log("Payment order response:", data);
 
-      if (data?.paymentRequest?.transaction_id) {
+      if (data.paymentRequest?.transaction_id) {
         toast.success("✅ Payment order created!");
-        localStorage.setItem("paymentInfo", JSON.stringify(paymentData));
-        localStorage.setItem(
-          "transactionId",
-          data.paymentRequest.transaction_id
-        );
-       router.push(`/make-payment?transactionId=${data.paymentRequest.transaction_id}`);
-
+        window.location.href = `/make-payment?transactionId=${data.paymentRequest.transaction_id}&teacherAdminPackageId=${teacherAdminPackageId}`;
       } else {
         toast.error("❌ Could not create payment order");
       }
@@ -122,69 +141,72 @@ const paymentData = {
     }
   };
 
-  if (!isLoaded) {
-    return (
-      <div className="flex items-center justify-center min-h-screen text-gray-500">
-        Loading payment details...
-      </div>
-    );
-  }
-
   return (
     <div className="max-w-md mx-auto mt-12 p-6 bg-white rounded-xl shadow space-y-4">
-      <h2 className="text-2xl font-semibold text-center mb-4">
-        Payment Details
-      </h2>
+      <h2 className="text-2xl font-semibold text-center mb-4">Teacher Payment Request</h2>
 
-      <div className="space-y-3">
-        <input
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Name"
-          className="w-full p-2 border rounded"
-        />
+      {/* Email input + Fetch button */}
+      <div className="flex space-x-2">
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
-          className="w-full p-2 border rounded"
+          placeholder="Enter teacher email"
+          className="flex-1 p-2 border rounded"
         />
-        <input
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          placeholder="Phone"
-          className="w-full p-2 border rounded"
-        />
-        <input
-          type="number"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          placeholder="Amount"
-          className="w-full p-2 border rounded"
-        />
-        <input
-          value={purpose}
-          onChange={(e) => setPurpose(e.target.value)}
-          placeholder="Purpose"
-          className="w-full p-2 border rounded"
-        />
+        <button
+          onClick={() => fetchEnrollment(email)}
+          className="bg-blue-600 text-white px-4 rounded hover:bg-blue-700"
+        >
+          Fetch
+        </button>
       </div>
+
+      {/* Show fetched enrollment data */}
+      {enrollmentData && (
+        <div className="space-y-3 mt-4">
+          <input
+            value={enrollmentData.teacherName}
+            readOnly
+            placeholder="Name"
+            className="w-full p-2 border rounded bg-gray-100"
+          />
+          <input
+            value={enrollmentData.teacherEmail}
+            readOnly
+            placeholder="Email"
+            className="w-full p-2 border rounded bg-gray-100"
+          />
+          <input
+            value={enrollmentData.teacherPhone}
+            readOnly
+            placeholder="Phone"
+            className="w-full p-2 border rounded bg-gray-100"
+          />
+          <input
+            value={enrollmentData.packagePrice} // now shows finalPrice
+            readOnly
+            placeholder="Amount"
+            className="w-full p-2 border rounded bg-gray-100"
+          />
+          <input
+            value={enrollmentData.packageName}
+            readOnly
+            placeholder="Purpose"
+            className="w-full p-2 border rounded bg-gray-100"
+          />
+        </div>
+      )}
 
       <button
         onClick={handlePay}
-        disabled={loading}
+        disabled={loading || !enrollmentData}
         className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 mt-4"
       >
-        {loading ? "Processing..." : "Proceed to Pay 💳"}
+        {loading ? "Processing..." : "Pay Now 💳"}
       </button>
 
-      <ToastContainer
-        position="top-center"
-        autoClose={3000}
-        hideProgressBar
-        theme="dark"
-      />
+      <ToastContainer position="top-center" autoClose={3000} hideProgressBar theme="dark" />
     </div>
   );
 }

@@ -5,7 +5,8 @@ import IdleTimerWarning from "@/app/components/IdleTimerWarning";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-screen">
+   <div className="flex h-screen overflow-hidden">
+
       {/* Sidebar */}
       <Sidebar />
 

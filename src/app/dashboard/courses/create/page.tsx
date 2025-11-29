@@ -108,8 +108,9 @@ const handleSaveAndNext = async () => {
     formData.append("startDate", startDate);
     formData.append("languageId", String(languageId || ""));
     formData.append("publish", String(publish));
+    formData.append("packageIds", JSON.stringify(packageIds));//change here 
 
-    packageIds.forEach((id) => formData.append("packageIds", String(id)));
+    // packageIds.forEach((id) => formData.append("packageIds", String(id)));
 
     if (thumbnailFile) {
       formData.append("thumbnail", thumbnailFile); // ✅ must match backend interceptor name
@@ -150,68 +151,73 @@ const handleSaveAndNext = async () => {
         </p>
 
         {/* ✅ Package Selection */}
-        <div className="mb-6">
-          <Label htmlFor="packageId">
-            Select Packages <span className="text-red-500">*</span>
-          </Label>
+     <div className="mb-6">
+  <Label htmlFor="packageId">
+    Select Packages <span className="text-red-500">*</span>
+  </Label>
 
-          <div className="flex flex-wrap gap-2 mb-2">
-            {packageIds.length > 0 ? (
-              packageIds.map((id) => {
-                const pkg = packages.find(
-                  (p) => p.id === id || p.package_id === id
-                );
-                return (
-                  <span
-                    key={id}
-                    className="flex items-center bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm"
-                  >
-                    {pkg?.title ?? pkg?.name ?? `Package ${id}`}
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setPackageIds((prev) => prev.filter((pid) => pid !== id))
-                      }
-                      className="ml-2 text-purple-500 hover:text-purple-700 font-bold"
-                    >
-                      ×
-                    </button>
-                  </span>
-                );
-              })
-            ) : (
-              <p className="text-gray-400 text-sm">No packages selected</p>
-            )}
-          </div>
-
-          <select
-            onChange={(e) => {
-              const selectedId = Number(e.target.value);
-              if (selectedId && !packageIds.includes(selectedId)) {
-                setPackageIds((prev) => [...prev, selectedId]);
-              }
-              e.target.value = "";
-            }}
-            className="w-full p-2 border rounded-md shadow-sm focus:ring-purple-500 focus:border-purple-500"
+  {/* Selected Pills */}
+  <div className="flex flex-wrap gap-2 mb-2">
+    {packageIds.length > 0 ? (
+      packageIds.map((id) => {
+        const pkg = packages.find(
+          (p) => p.id === id || p.package_id === id
+        );
+        return (
+          <span
+            key={id}
+            className="flex items-center bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm"
           >
-            <option value="">-- Select a package --</option>
-            {packages
-              .filter(
-                (pkg) =>
-                  !packageIds.includes(pkg.id ?? pkg.package_id ?? 0)
-              )
-              .map((pkg, idx) => {
-                const key = pkg.id ?? pkg.package_id ?? idx;
-                const title = pkg.title ?? pkg.name ?? `Package ${key}`;
-                const val = pkg.id ?? pkg.package_id ?? key;
-                return (
-                  <option key={`pkg-${key}`} value={String(val)}>
-                    {title}
-                  </option>
-                );
-              })}
-          </select>
-        </div>
+            {pkg?.title ?? pkg?.name ?? `Package ${id}`}
+            <button
+              type="button"
+              onClick={() =>
+                setPackageIds((prev) => prev.filter((pid) => pid !== id))
+              }
+              className="ml-2 text-purple-500 hover:text-purple-700 font-bold"
+            >
+              ×
+            </button>
+          </span>
+        );
+      })
+    ) : (
+      <p className="text-gray-400 text-sm">No packages selected</p>
+    )}
+  </div>
+
+  {/* Bootstrap Styled Select */}
+  <select
+    onChange={(e) => {
+      const selectedId = Number(e.target.value);
+      if (selectedId && !packageIds.includes(selectedId)) {
+        setPackageIds((prev) => [...prev, selectedId]);
+      }
+      e.target.value = "";
+    }}
+    className="form-select"   // <-- Bootstrap style applied
+    aria-label="Select Packages"
+  >
+    <option value="">Select the package</option>
+
+    {packages
+      .filter(
+        (pkg) => !packageIds.includes(pkg.id ?? pkg.package_id ?? 0)
+      )
+      .map((pkg, idx) => {
+        const key = pkg.id ?? pkg.package_id ?? idx;
+        const title = pkg.title ?? pkg.name ?? `Package ${key}`;
+        const val = pkg.id ?? pkg.package_id ?? key;
+
+        return (
+          <option key={`pkg-${key}`} value={String(val)}>
+            {title}
+          </option>
+        );
+      })}
+  </select>
+</div>
+
 
         {/* ✅ Course Form */}
         <div className="space-y-6">
@@ -228,17 +234,21 @@ const handleSaveAndNext = async () => {
             />
           </div>
 
-          <div>
-            <Label htmlFor="description">
-              Course Description <span className="text-red-500">*</span>
-            </Label>
-            <div className="mt-2">
-              <CKEditorInput value={description} onChange={setDescription} />
-            </div>
-            <p className="text-xs text-gray-500 mt-1">
-              Description must be at least 200 words.
-            </p>
-          </div>
+        <div className="col-12 mb-3">
+  <label className="form-label">
+    Course Description <span className="text-red-500">*</span>
+  </label>
+
+  {/* CKEditor inside Bootstrap form-control wrapper */}
+  <div className="form-control p-0" style={{ height: "auto" }}>
+    <CKEditorInput value={description} onChange={setDescription} />
+  </div>
+
+  <small className="text-muted">
+    Description must be at least 200 words.
+  </small>
+</div>
+
 
           <div>
             <Label htmlFor="start-date">Start Date</Label>
@@ -274,23 +284,29 @@ const handleSaveAndNext = async () => {
           </div>
 
           {/* ✅ Thumbnail Upload */}
-          <div>
-            <Label htmlFor="thumbnail">Course Thumbnail</Label>
-            <Input
-              id="thumbnail"
-              type="file"
-              accept="image/*"
-              onChange={handleThumbnailChange}
-              className="mt-2"
-            />
-            {thumbnailPreview && (
-              <img
-                src={thumbnailPreview}
-                alt="Preview"
-                className="mt-3 w-48 h-28 object-cover rounded-md shadow"
-              />
-            )}
-          </div>
+        <div className="col-12 mb-3">
+  <label htmlFor="thumbnail" className="form-label">
+    Course Thumbnail
+  </label>
+
+  <input
+    id="thumbnail"
+    type="file"
+    accept="image/*"
+    onChange={handleThumbnailChange}
+    className="form-control"
+  />
+
+  {thumbnailPreview && (
+    <img
+      src={thumbnailPreview}
+      alt="Preview"
+      className="mt-3 rounded shadow"
+      style={{ width: "200px", height: "120px", objectFit: "cover" }}
+    />
+  )}
+</div>
+
 
           <div className="flex items-center gap-3">
             <Checkbox
@@ -304,14 +320,27 @@ const handleSaveAndNext = async () => {
           </div>
         </div>
 
-        <div className="mt-10 text-right">
-          <Button
-            onClick={handleSaveAndNext}
-            className="px-8 py-2 bg-purple-600 hover:bg-purple-700 text-white text-md rounded-md"
-          >
-            Save & Continue
-          </Button>
-        </div>
+      <div className="mt-10 text-right flex justify-end gap-3">
+  
+  {/* Close Button */}
+<button
+  type="button"
+  className="btn btn-secondary"
+  onClick={() => window.history.back()}
+>
+  Close
+</button>
+
+
+  {/* Save Button */}
+  <Button
+    onClick={handleSaveAndNext}
+    className="btn btn-primary"
+  >
+    Save & Continue
+  </Button>
+
+</div>
       </div>
     </div>
   );

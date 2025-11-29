@@ -155,7 +155,7 @@ export default function WebinarForm({
       if (!webinarId) throw new Error('Missing webinar ID in response');
 
       if (redirectTo === 'listing') router.push('/dashboard/webinars');
-      else router.push(`/upload-resource?webinarId=${webinarId}`);
+      else router.push(`/dashboard/webinars/upload-resource?webinarId=${webinarId}`);
     } catch (err: any) {
       console.error('submit error', err);
       setErrors({ form: err?.message ?? 'Failed to create webinar' });
@@ -228,7 +228,7 @@ export default function WebinarForm({
               e.target.value = '';
             }}
             value=""
-            className={`w-full p-2 border rounded shadow-sm ${
+            className={`form-select ${
               errors.packageIds ? 'border-red-500' : ''
             }`}
           >
@@ -257,7 +257,7 @@ export default function WebinarForm({
             name="title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className={`w-full p-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 ${
+            className={`form-control ${
               errors.title ? 'border-red-500' : ''
             }`}
           />
@@ -362,7 +362,7 @@ export default function WebinarForm({
               name="date"
               value={form.date}
               onChange={handleChange}
-              className={`w-full p-2 border rounded-md shadow-sm ${
+              className={`form-control ${
                 errors.date ? 'border-red-500' : ''
               }`}
             />
@@ -375,7 +375,7 @@ export default function WebinarForm({
               name="time"
               value={form.time}
               onChange={handleChange}
-              className={`w-full p-2 border rounded-md shadow-sm ${
+              className={`form-control ${
                 errors.time ? 'border-red-500' : ''
               }`}
             />
@@ -390,7 +390,7 @@ export default function WebinarForm({
               name="duration"
               value={form.duration}
               onChange={handleChange}
-              className={`w-full p-2 border rounded-md shadow-sm ${
+              className={`form-control ${
                 errors.duration ? 'border-red-500' : ''
               }`}
             />
@@ -408,7 +408,7 @@ export default function WebinarForm({
             value={form.meetingLink}
             onChange={handleChange}
             placeholder="https://zoom.us/..."
-            className={`w-full p-2 border rounded-md shadow-sm ${
+            className={`form-control ${
               errors.meetingLink ? 'border-red-500' : ''
             }`}
           />
@@ -476,24 +476,25 @@ export default function WebinarForm({
         </div>
 
         {/* Submit Buttons */}
-        <div className="flex gap-3">
-          <button
-            type="button"
-            onClick={(e) => handleFormSubmit(e, 'listing')}
-            disabled={isSubmitting}
-            className="flex-1 bg-blue-600 text-white p-2 rounded"
-          >
-            {isSubmitting ? 'Creating...' : 'Create Webinar'}
-          </button>
-          <button
-            type="button"
-            onClick={(e) => handleFormSubmit(e, 'resource')}
-            disabled={isSubmitting}
-            className="flex-1 bg-green-600 text-white p-2 rounded"
-          >
-            {isSubmitting ? 'Creating...' : 'Create & Add Resources'}
-          </button>
-        </div>
+<div className="flex justify-end gap-3">
+  <button
+    type="button"
+    onClick={(e) => handleFormSubmit(e, 'listing')}
+    disabled={isSubmitting}
+    className="btn btn-secondary"
+  >
+    {isSubmitting ? 'Creating...' : 'Create Webinar'}
+  </button>
+  <button
+    type="button"
+    onClick={(e) => handleFormSubmit(e, 'resource')}
+    disabled={isSubmitting}
+    className="btn btn-primary"
+  >
+    {isSubmitting ? 'Creating...' : 'Create & Add Resources'}
+  </button>
+</div>
+
       </form>
     </div>
   );

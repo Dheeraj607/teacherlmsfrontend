@@ -38,23 +38,35 @@ export default function OtpPage() {
     }
   };
 
-  // ✅ Verify OTP
+  // ✅ Verify OTP (UPDATED ONLY THIS FUNCTION)
   const verifyOtp = async () => {
     setLoading(true);
     try {
-      const res = await api.post("/auth/verify-otp", { phone, otp });
-      toast.success("Phone verified successfully!");
+      const res = await api.post("/users/verify-otp", { phone, otp });
+      const data = res.data;
 
-      // ✅ Make sure pendingEmail exists
-      if (!email) {
-        const regData = JSON.parse(localStorage.getItem("registrationData") || "{}");
-        if (regData.email) {
-          localStorage.setItem("pendingEmail", regData.email);
-        }
+      console.log("OTP verify response:", data);
+
+      // ⭐ CASE 1: Email NOT verified → redirect to email verification
+      if (data.status === "EMAIL_NOT_VERIFIED") {
+        localStorage.setItem("pendingEmail", data.email);
+        toast.success("Phone verified! Email verification required.");
+        router.push("/verify-email");
+        return;
       }
 
-      // ✅ Redirect to email verification
-      router.push("/verify-email");
+      // ⭐ CASE 2: Both phone + email verified → login success
+      if (data.status === "SUCCESS") {
+        localStorage.setItem("accessToken", data.accessToken);
+        localStorage.setItem("refreshToken", data.refreshToken);
+        toast.success("Login successful!");
+        router.push("/dashboard");
+        return;
+      }
+
+      // (Optional) Fallback
+      toast.success("Phone verified successfully!");
+
     } catch (error: any) {
       toast.error(error.response?.data?.message || "Invalid or expired OTP");
     } finally {

@@ -51,24 +51,25 @@ export default function ChapterCreatePage() {
 
   return (
     <div className="p-8 min-h-screen bg-purple-50">
-      <div className="max-w-xl mx-auto bg-white p-6 shadow-xl rounded-2xl">
+      <div className="max-w-xl bg-white p-6 shadow-xl rounded-2xl">
+
         <h1 className="text-2xl font-bold mb-4">Create Chapter</h1>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-purple-700 font-medium mb-2">Title</label>
+            <label className="form-label text-white">Title</label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Enter title"
               required
-              className="w-full p-2 border rounded"
+              className="form-control"
             />
           </div>
 
           <div>
-            <label className="block text-purple-700 font-medium mb-2">Description</label>
+            <label className="form-label text-white">Description</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -79,43 +80,56 @@ export default function ChapterCreatePage() {
           </div>
 
           <div>
-            <label className="block text-purple-700 font-medium mb-2">Duration</label>
+            <label className="form-label text-white">Duration</label>
             <input
               type="text"
               value={duration}
               onChange={(e) => setDuration(e.target.value)}
               placeholder="e.g., 5 min"
-              className="w-full p-2 border rounded"
+              className="form-control"
             />
           </div>
 
           <div>
-            <label className="block text-purple-700 font-medium mb-2">Order Index</label>
+            <label className="form-label text-white">Order Index</label>
             <input
               type="number"
               value={orderIndex}
               onChange={(e) => setOrderIndex(Number(e.target.value))}
               placeholder="Enter order index"
-              className="w-full p-2 border rounded"
+              className="form-control"
             />
           </div>
 
-          <label className="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              checked={isFreePreview}
-              onChange={(e) => setIsFreePreview(e.target.checked)}
-            />
-            <span>Is Free Preview</span>
-          </label>
+         <div className="flex items-center justify-between mt-4">
+  <label className="flex items-center space-x-2">
+    <input
+      type="checkbox"
+      checked={isFreePreview}
+      onChange={(e) => setIsFreePreview(e.target.checked)}
+    />
+    <span>Is Free Preview</span>
+  </label>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
-          >
-            {loading ? 'Creating...' : 'Create Chapter'}
-          </button>
+  <div className="flex gap-2">
+    <button
+      type="button"
+      className="btn btn-secondary"
+      onClick={() => router.back()}
+    >
+      Close
+    </button>
+
+    <button
+      type="submit"
+      disabled={loading}
+      className="btn btn-primary"
+    >
+      {loading ? 'Creating...' : 'Create Chapter'}
+    </button>
+  </div>
+</div>
+
         </form>
       </div>
     </div>

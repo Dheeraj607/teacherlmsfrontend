@@ -54,16 +54,17 @@ export default function CreateSectionPage() {
 
   return (
     <div className="p-8 min-h-screen bg-purple-50">
-      <div className="max-w-xl mx-auto bg-white p-6 shadow-xl rounded-2xl">
+      <div className="max-w-xl bg-white p-6 shadow-xl rounded-2xl">
+
         <h1 className="text-2xl font-bold mb-6">Create Section</h1>
 
         <div className="mb-4">
-          <label className="block text-purple-700 font-medium mb-2">Title</label>
+          <label className="form-label text-white">Title</label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full p-3 border border-purple-300 rounded-md"
+            className="form-control"
             placeholder="Enter section title"
           />
         </div>
@@ -80,17 +81,17 @@ export default function CreateSectionPage() {
         </div> */}
 
         <div className="mb-4">
-          <label className="block text-purple-700 font-medium mb-2">Description</label>
+          <label className="form-label">Description</label>
           <CKEditorInput value={description} onChange={setDescription} />
         </div>
 
         <div className="mb-6">
-          <label className="block text-purple-700 font-medium mb-2">Order Index</label>
+          <label className="form-label">Order Index</label>
           <input
             type="number"
             value={orderIndex}
             onChange={(e) => setOrderIndex(parseInt(e.target.value))}
-            className="w-full p-3 border border-purple-300 rounded-md"
+            className="form-control"
             min={1}
           />
         </div>
@@ -98,9 +99,9 @@ export default function CreateSectionPage() {
         <div className="text-right">
           <button
             onClick={handleSubmit}
-            className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700"
+            className="btn btn-primary"
           >
-            Save Section and Go to chapters
+            Save and Go to chapters
           </button>
         </div>
       </div>

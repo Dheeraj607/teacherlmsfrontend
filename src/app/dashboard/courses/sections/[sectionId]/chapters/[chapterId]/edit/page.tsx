@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
-import axios from '@/app/lib/axios';
+import axios from '@/services/api';
+
 
 export default function ChapterEditPage() {
   const router = useRouter();
@@ -67,15 +68,16 @@ useEffect(() => {
 
     setLoading(true);
     try {
-      await axios.put(`/chapters/${chapterId}`, {
-        title,
-        description,
-        order_index: orderIndex,
-        is_free_preview: isFreePreview,
-        duration: duration || null,
-        section_id: sectionId,
-        course_id: courseId,
-      });
+    await axios.patch(`/chapters/${chapterId}`, {
+  title,
+  description,
+  order_index: orderIndex,
+  is_free_preview: isFreePreview,
+  duration: duration || null,
+  section_id: sectionId,
+  course_id: courseId,
+});
+
 
       alert('✅ Chapter updated successfully!');
 

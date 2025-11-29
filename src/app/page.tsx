@@ -69,7 +69,7 @@ export default function PackageListPage() {
         ) : (
           packages.map((pkg) => {
             const imageUrl = pkg.imageName
-              ? `${process.env.NEXT_PUBLIC_API_URL}/uploads/adminpackage/${pkg.imageName.replace(/\\/g, "/")}`
+              ? `http://localhost:3000/uploads/adminpackage/${pkg.imageName.replace(/\\/g, "/")}`
               : "/placeholder.png";
 
             // Read pricing directly

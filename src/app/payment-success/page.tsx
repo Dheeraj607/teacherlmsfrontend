@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 
 const SuccessPage: React.FC = () => {
@@ -12,6 +12,41 @@ const SuccessPage: React.FC = () => {
     process.env.NEXT_PUBLIC_API_URL_TUNNEL ||
     process.env.NEXT_PUBLIC_API_URL_LOCAL ||
     "http://localhost:3000";
+
+  // ✅ Delete enrollment if payment is success
+  const deleteEnrollment = async () => {
+    try {
+      const paymentData = localStorage.getItem("paymentData");
+      if (!paymentData) return;
+
+      const parsed = JSON.parse(paymentData);
+      const email = parsed.teacher?.email;
+
+      if (!email) return;
+
+      const res = await fetch(`${API_URL}/teacher-enrollment/by-email?email=${encodeURIComponent(email)}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        console.log("Enrollment deleted successfully after payment");
+        // Optionally, clear localStorage
+        localStorage.removeItem("paymentData");
+        localStorage.removeItem("teacherAdminPackageId");
+      } else {
+        console.warn("Failed to delete enrollment after payment");
+      }
+    } catch (err) {
+      console.error("Error deleting enrollment:", err);
+    }
+  };
+
+  useEffect(() => {
+    if (transactionId) {
+      // Only trigger deletion when payment is successful
+      deleteEnrollment();
+    }
+  }, [transactionId]);
 
   const downloadInvoice = async () => {
     if (!transactionId) {
@@ -58,7 +93,6 @@ const SuccessPage: React.FC = () => {
         Download Invoice
       </button>
 
-      {/* ✅ Added Login Button */}
       <button onClick={goToLogin} style={styles.loginButton}>
         Go to Login 🔐
       </button>
