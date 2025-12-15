@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 let idleTimeout: NodeJS.Timeout | null = null;
 let logoutCountdownInterval: NodeJS.Timeout | null = null;
 
-export const useIdleTimer = (idleTime = 10 * 60 * 1000, logoutSeconds = 60) => {
+export const useIdleTimer = (idleTime = 60 * 60 * 1000, logoutSeconds = 60) => {
   const [showWarning, setShowWarning] = useState(false);
   const [countdown, setCountdown] = useState(logoutSeconds);
 
@@ -48,3 +48,74 @@ export const useIdleTimer = (idleTime = 10 * 60 * 1000, logoutSeconds = 60) => {
 
   return { showWarning, countdown };
 };
+
+
+
+
+// import { useState, useEffect, useRef } from "react";
+
+// export const useIdleTimer = (
+//   idleTime = 1 * 60 * 1000, // 1 minute inactivity
+//   logoutSeconds = 10 // countdown seconds
+// ) => {
+//   const [showWarning, setShowWarning] = useState(false);
+//   const [countdown, setCountdown] = useState(logoutSeconds);
+
+//   const idleTimeout = useRef<NodeJS.Timeout | null>(null);
+//   const countdownInterval = useRef<NodeJS.Timeout | null>(null);
+
+//   const logoutUser = () => {
+//     console.log("🔒 Logging out user due to inactivity");
+//     localStorage.clear();
+//     window.location.href = "/auth/login";
+//   };
+
+//   const startCountdown = () => {
+//     setShowWarning(true);
+//     setCountdown(logoutSeconds);
+
+//     countdownInterval.current = setInterval(() => {
+//       setCountdown((prev) => {
+//         if (prev <= 1) {
+//           clearInterval(countdownInterval.current!);
+//           logoutUser();
+//           return 0;
+//         }
+//         return prev - 1;
+//       });
+//     }, 1000);
+//   };
+
+//   const resetTimer = () => {
+//     // Reset timers
+//     if (idleTimeout.current) clearTimeout(idleTimeout.current);
+//     if (countdownInterval.current) clearInterval(countdownInterval.current);
+
+//     setShowWarning(false);
+//     setCountdown(logoutSeconds);
+
+//     // Start idle timeout
+//     idleTimeout.current = setTimeout(() => {
+//       console.log("⚠️ User inactive, starting logout countdown");
+//       startCountdown();
+//     }, idleTime);
+//   };
+
+//   useEffect(() => {
+//     // Attach events
+//     const events = ["mousemove", "keydown", "scroll", "touchstart"];
+//     events.forEach((e) => window.addEventListener(e, resetTimer));
+
+//     // Start timer on mount
+//     resetTimer();
+
+//     return () => {
+//       // Cleanup
+//       if (idleTimeout.current) clearTimeout(idleTimeout.current);
+//       if (countdownInterval.current) clearInterval(countdownInterval.current);
+//       events.forEach((e) => window.removeEventListener(e, resetTimer));
+//     };
+//   }, []);
+
+//   return { showWarning, countdown };
+// };

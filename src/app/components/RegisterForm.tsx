@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import axios from "axios";
+// import axios from "axios";
 import { useRouter } from "next/navigation";
+import api from "../lib/api";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+// const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 export default function RegisterForm() {
   const router = useRouter();
@@ -32,10 +33,11 @@ const handleSubmit = async (e: React.FormEvent) => {
   setMessage(null);
 
   try {
-    const response = await axios.post(`${API_URL}/auth/register`, {
-      ...formData,
-      packageId: selectedPackage?.id || null,   // ✅ Send packageId to backend
-    });
+const response = await api.post("/auth/register", {
+  ...formData,
+  packageId: selectedPackage?.id || null,
+});
+
  const teacherAdminPackageId = response.data.teacherAdminPackageId;
 
 // Save teacherAdminPackageId locally

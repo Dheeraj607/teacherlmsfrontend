@@ -59,6 +59,32 @@
 // }
 
 
+// "use client";
+// import { useRouter } from "next/navigation";
+
+// export default function Sidebar() {
+//   const router = useRouter();
+
+//   const handleLogout = () => {
+//     localStorage.removeItem("token");
+//     router.push("/login");
+//   };
+
+//   return (
+//     <div className="sidebar d-flex flex-column">
+//       <h4 className="p-3 border-bottom">Dashboard</h4>
+
+//       <a onClick={() => router.push("/dashboard/packages")}>Packages</a>
+//       <a onClick={() => router.push("/dashboard/courses")}>Courses</a>
+//       <a onClick={() => router.push("/dashboard/webinars")}>Webinars</a>
+//       <a onClick={() => router.push("/dashboard/registered-students")}>Registered Students</a>
+
+//       <a onClick={handleLogout} className="mt-auto logout-btn">Logout</a>
+//     </div>
+//   );
+// }
+
+
 "use client";
 import { useRouter } from "next/navigation";
 
@@ -66,32 +92,28 @@ export default function Sidebar() {
   const router = useRouter();
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    router.push("/");
+    // Clear all relevant localStorage items
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("student");
+    localStorage.removeItem("studentId");
+    localStorage.removeItem("domainData");
+
+    // Redirect to login
+    router.push("/login");
   };
 
   return (
     <div className="sidebar d-flex flex-column">
-      <h2 className="p-3 border-bottom">Dashboard</h2>
+      <h4 className="p-3 border-bottom">Dashboard</h4>
 
-      <a onClick={() => router.push("/dashboard/packages")}>
-         Packages
-      </a>
+      <a onClick={() => router.push("/dashboard/packages")}>Packages</a>
+      <a onClick={() => router.push("/dashboard/courses")}>Courses</a>
+      <a onClick={() => router.push("/dashboard/webinars")}>Webinars</a>
+      <a onClick={() => router.push("/dashboard/registered-students")}>Registered Students</a>
 
-      <a onClick={() => router.push("/dashboard/courses")}>
-         Courses
-      </a>
-
-      <a onClick={() => router.push("/dashboard/webinars")}>
-         Webinars
-      </a>
-
-      <a onClick={() => router.push("/dashboard/registered-students")}>
-         Registered Students
-      </a>
-
-      <a onClick={handleLogout} className="logout-btn mt-auto">
-         Logout
+      <a onClick={handleLogout} className="mt-auto logout-btn">
+        Logout
       </a>
     </div>
   );

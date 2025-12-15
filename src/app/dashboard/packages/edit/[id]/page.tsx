@@ -38,7 +38,7 @@ export default function EditPackagePage() {
     );
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-start py-10 px-10">
+    <div className="min-h-screen bg-gray-50 flex flex-col items-start py-10 px-10 font-sans">
 
       <div className="w-full max-w-3xl bg-white shadow-lg rounded-2xl p-8">
         {/* Header */}

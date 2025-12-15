@@ -1,5 +1,5 @@
-// // course/sections/create/page.tsx
 "use client";
+export const dynamic = 'force-dynamic';
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -7,10 +7,17 @@ import CKEditorInput from "@/app/components/CKEditorInput";
 
 export default function CreateSectionPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  // const searchParams = useSearchParams();
 
-  const courseIdParam = searchParams?.get("courseId");
-  const courseId =courseIdParam && !isNaN(Number(courseIdParam)) ? Number(courseIdParam) : null;
+  // const courseIdParam = searchParams?.get("courseId");
+  // const courseId =courseIdParam && !isNaN(Number(courseIdParam)) ? Number(courseIdParam) : null;
+const [courseId, setCourseId] = useState<number | null>(null);
+
+useEffect(() => {
+  const params = useSearchParams();
+  const courseIdParam = params?.get("courseId");
+  setCourseId(courseIdParam && !isNaN(Number(courseIdParam)) ? Number(courseIdParam) : null);
+}, []);
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -23,7 +30,7 @@ export default function CreateSectionPage() {
     }
 
     try {
-      await fetch("http://localhost:3000/sections", {
+      await fetch("http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000/sections", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -53,7 +60,7 @@ export default function CreateSectionPage() {
   }
 
   return (
-    <div className="p-8 min-h-screen bg-purple-50">
+    <div className="p-8 min-h-screen bg-purple-50 font-sans">
       <div className="max-w-xl bg-white p-6 shadow-xl rounded-2xl">
 
         <h1 className="text-2xl font-bold mb-6">Create Section</h1>
@@ -96,14 +103,24 @@ export default function CreateSectionPage() {
           />
         </div>
 
-        <div className="text-right">
-          <button
-            onClick={handleSubmit}
-            className="btn btn-primary"
-          >
-            Save and Go to chapters
-          </button>
-        </div>
+       <div className="d-flex justify-content-end gap-2">
+
+  <button
+    className="btn btn-secondary"
+    onClick={() => router.back()}
+  >
+    Close
+  </button>
+
+  <button
+    onClick={handleSubmit}
+    className="btn btn-primary"
+  >
+    Save and Go to Chapters
+  </button>
+
+</div>
+
       </div>
     </div>
   );

@@ -49,10 +49,10 @@ export default function CreateCoursePage() {
     const fetchData = async () => {
       try {
         const [langRes, pkgRes] = await Promise.all([
-          axios.get("http://localhost:3000/languages", {
+          axios.get("http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000/languages", {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          axios.get("http://localhost:3000/packages", {
+          axios.get("http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000/packages", {
             headers: { Authorization: `Bearer ${token}` },
           }),
         ]);
@@ -117,7 +117,7 @@ const handleSaveAndNext = async () => {
     }
 
     // ✅ FIXED: correct endpoint
-    const res = await axios.post("http://localhost:3000/courses", formData, {
+    const res = await axios.post("http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000/courses", formData, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",
@@ -140,8 +140,8 @@ const handleSaveAndNext = async () => {
 
 
   return (
-    <div className="relative min-h-screen bg-purple-50 py-12 px-6 overflow-hidden">
-      <div className="relative z-10 max-w-5xl mx-auto bg-white p-10 md:p-12 rounded-2xl shadow-2xl">
+    <div className="relative min-h-screen bg-purple-50 py-12 px-6 overflow-hidden font-sans">
+      <div className="relative z-10 max-w-5xl  bg-white p-10 md:p-12 rounded-2xl shadow-2xl">
         <h1 className="text-3xl font-bold mb-2 text-gray-800">
           Course Landing Page
         </h1>

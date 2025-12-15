@@ -4,7 +4,7 @@ import { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL_LOCAL || "http://localhost:3000";
+const API_URL = process.env.NEXT_PUBLIC_API_URL_LOCAL || "http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000";
 
 export default function TeacherPaymentRequestPage() {
   const [email, setEmail] = useState("");
@@ -77,24 +77,49 @@ export default function TeacherPaymentRequestPage() {
   };
 
   // Create payment request
-  const handlePay = async () => {
-    if (!enrollmentData) return toast.error("❌ No enrollment data available");
+ const handlePay = async () => {
+  if (!enrollmentData) return toast.error("❌ No enrollment data available");
 
-    const teacherAdminPackageId = enrollmentData.teacherAdminPackageId;
-    if (!teacherAdminPackageId) {
-      toast.error("❌ Teacher enrollment ID not found");
-      console.error("Enrollment data missing ID:", enrollmentData);
-      return;
-    }
+  const teacherAdminPackageId = enrollmentData.teacherAdminPackageId;
+  if (!teacherAdminPackageId) {
+    toast.error("❌ Teacher enrollment ID not found");
+    console.error("Enrollment data missing ID:", enrollmentData);
+    return;
+  }
 
-    const amount = Number(enrollmentData.packagePrice);
-    if (!amount || amount <= 0) {
-      toast.error("❌ Invalid package amount");
-      return;
-    }
+  const amount = Number(enrollmentData.packagePrice);
 
+  try {
+    setLoading(true);
+
+if (amount <= 0) {
+  // ✅ Free package: create successful payment request directly
+  const res = await fetch(`${API_URL}/payment-requests/free`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      studentTeacherPackageId: teacherAdminPackageId,
+      amount: 0, // <- include this
+      purpose: enrollmentData.packageName,
+      type: "teacher",
+      customer_name: enrollmentData.teacherName,
+      customer_email: enrollmentData.teacherEmail,
+      customer_phone: enrollmentData.teacherPhone,
+    }),
+  });
+
+  const data = await res.json();
+  console.log("Free payment created:", data);
+
+  toast.success("✅ Free package registered successfully!");
+  window.location.href = "/payment-success";
+  return;
+}
+  
+
+    // 💳 Paid package: proceed with normal payment flow
     const body = {
-      studentTeacherPackageId: teacherAdminPackageId, // for backend reference
+      studentTeacherPackageId: teacherAdminPackageId,
       externalId: Number(teacherAdminPackageId),
       amount,
       gst: 0,
@@ -116,30 +141,28 @@ export default function TeacherPaymentRequestPage() {
 
     console.log("Creating payment order:", body);
 
-    try {
-      setLoading(true);
-      const res = await fetch(`${API_URL}/payment-requests/order`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
+    const res = await fetch(`${API_URL}/payment-requests/order`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
 
-      const data = await res.json();
-      console.log("Payment order response:", data);
+    const data = await res.json();
+    console.log("Payment order response:", data);
 
-      if (data.paymentRequest?.transaction_id) {
-        toast.success("✅ Payment order created!");
-        window.location.href = `/make-payment?transactionId=${data.paymentRequest.transaction_id}&teacherAdminPackageId=${teacherAdminPackageId}`;
-      } else {
-        toast.error("❌ Could not create payment order");
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error("❌ Error creating payment order");
-    } finally {
-      setLoading(false);
+    if (data.paymentRequest?.transaction_id) {
+      toast.success("✅ Payment order created!");
+      window.location.href = `/make-payment?transactionId=${data.paymentRequest.transaction_id}&teacherAdminPackageId=${teacherAdminPackageId}`;
+    } else {
+      toast.error("❌ Could not create payment order");
     }
-  };
+  } catch (err) {
+    console.error(err);
+    toast.error("❌ Error processing payment");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="max-w-md mx-auto mt-12 p-6 bg-white rounded-xl shadow space-y-4">

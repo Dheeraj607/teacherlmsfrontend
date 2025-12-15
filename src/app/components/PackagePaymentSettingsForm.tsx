@@ -7,7 +7,7 @@ import api from "@/app/lib/api";
 export enum PaymentType {
   FREE = "free",
   PAID = "paid",
-  SUBSCRIPTION = "subscription",
+  // SUBSCRIPTION = "subscription",
 }
 
 interface Props {
@@ -116,7 +116,7 @@ export default function PackagePaymentSettingsForm({ packageId }: Props) {
   if (loading) return <p>Loading...</p>;
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 max-w-md">
+    <form onSubmit={handleSubmit} className="space-y-4 max-w-md font-sans">
       {/* Payment Type */}
       <div>
         <label className="block mb-1 font-medium">Payment Type</label>
@@ -128,7 +128,7 @@ export default function PackagePaymentSettingsForm({ packageId }: Props) {
         >
           <option value={PaymentType.FREE}>Free</option>
           <option value={PaymentType.PAID}>Paid</option>
-          <option value={PaymentType.SUBSCRIPTION}>Subscription</option>
+          {/* <option value={PaymentType.SUBSCRIPTION}>Subscription</option> */}
         </select>
       </div>
 
@@ -166,7 +166,7 @@ export default function PackagePaymentSettingsForm({ packageId }: Props) {
       )}
 
       {/* Recurring */}
-      <div className="flex items-center gap-2">
+      {/* <div className="flex items-center gap-2">
         <input
           type="checkbox"
           name="isRecurring"
@@ -193,7 +193,7 @@ export default function PackagePaymentSettingsForm({ packageId }: Props) {
             className="border p-2 rounded w-full"
           />
         </div>
-      )}
+      )} */}
 
       <button
         type="submit"

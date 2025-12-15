@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 export const useTokenManager = () => {
-  const [remaining, setRemaining] = useState(600); // 10 minutes
+  const [remaining, setRemaining] = useState(3600); // 10 minutes
   const [tokenReady, setTokenReady] = useState(false);
 
   useEffect(() => {

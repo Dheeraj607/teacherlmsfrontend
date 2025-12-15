@@ -99,7 +99,7 @@ import RegisterForm from "@/app/components/RegisterForm";
 
 export default function RegisterPage() {
   return (
-    <section className="flex min-h-screen">
+    <section className="flex min-h-screen font-sans">
 
       {/* LEFT SIDE */}
       <div className="hidden md:flex flex-1 flex-col items-center justify-center bg-white p-10">

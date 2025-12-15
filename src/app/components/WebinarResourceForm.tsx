@@ -32,7 +32,7 @@ export default function WebinarResourceForm() {
       formData.append('resourceTypeId', resourceTypeId);
 
       const response = await axios.post(
-        'http://localhost:3000/webinar-resources/upload',
+        'http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000/webinar-resources/upload',
         formData,
         {
           headers: {

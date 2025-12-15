@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:3000", // ✅ your NestJS API
+  baseURL: "http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000", // ✅ your NestJS API
 });
 
 // 🔒 Automatically include JWT token for all requests

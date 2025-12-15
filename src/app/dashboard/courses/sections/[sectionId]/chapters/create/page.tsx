@@ -50,7 +50,7 @@ export default function ChapterCreatePage() {
   };
 
   return (
-    <div className="p-8 min-h-screen bg-purple-50">
+    <div className="p-8 min-h-screen bg-purple-50 font-sans">
       <div className="max-w-xl bg-white p-6 shadow-xl rounded-2xl">
 
         <h1 className="text-2xl font-bold mb-4">Create Chapter</h1>

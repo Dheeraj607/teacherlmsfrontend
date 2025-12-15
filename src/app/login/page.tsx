@@ -35,7 +35,7 @@
 import "@/app/css/style.css"; // Adjust the path if different
 
 
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import api from "@/utils/axiosInstance";
 import { toast, ToastContainer } from "react-toastify";
@@ -48,6 +48,24 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
+
+ useEffect(() => {
+    const handlePopState = (e: PopStateEvent) => {
+      const token = localStorage.getItem("accessToken");
+
+      if (!token) {
+        // No token, go to landing page
+        router.replace("/");
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [router]);
+  
   const handleLogin = async () => {
     if (!email || !password) {
       toast.error("Please enter both email and password");
@@ -112,7 +130,7 @@ export default function LoginPage() {
   };
 
   return (
-    <section className="container-fluid g-0">
+    <section className="container-fluid g-0 font-sans">
       <ToastContainer position="top-center" autoClose={3000} />
       <div className="container g-0" style={{ height: "100vh" }}>
         <div className="col loginpage">

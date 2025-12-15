@@ -1,17 +1,25 @@
 "use client";
+export const dynamic = 'force-dynamic';
 
 import React, { useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 
 const SuccessPage: React.FC = () => {
-  const searchParams = useSearchParams();
-  const transactionId = searchParams?.get("transactionId");
+  // const searchParams = useSearchParams();
+  // const transactionId = searchParams?.get("transactionId");
+  const [transactionId, setTransactionId] = React.useState<string | null>(null);
+
+useEffect(() => {
+  const params = useSearchParams();
+  setTransactionId(params?.get("transactionId"));
+}, []);
+
   const router = useRouter();
 
   const API_URL =
     process.env.NEXT_PUBLIC_API_URL_TUNNEL ||
     process.env.NEXT_PUBLIC_API_URL_LOCAL ||
-    "http://localhost:3000";
+    "hhttp://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000";
 
   // ✅ Delete enrollment if payment is success
   const deleteEnrollment = async () => {
@@ -79,7 +87,7 @@ const SuccessPage: React.FC = () => {
   };
 
   const goToLogin = () => {
-    router.push("/registerlogin");
+    router.push("/login");
   };
 
   return (
@@ -89,9 +97,12 @@ const SuccessPage: React.FC = () => {
         Your Transaction ID: <strong>{transactionId}</strong>
       </p>
 
-      <button onClick={downloadInvoice} style={styles.button}>
-        Download Invoice
-      </button>
+   {transactionId && (
+  <button onClick={downloadInvoice} style={styles.button}>
+    Download Invoice
+  </button>
+)}
+
 
       <button onClick={goToLogin} style={styles.loginButton}>
         Go to Login 🔐

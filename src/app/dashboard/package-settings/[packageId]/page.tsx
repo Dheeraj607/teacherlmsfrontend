@@ -25,7 +25,7 @@ export default function PackageSettingsPage() {
   if (!packageData) return <p>Loading...</p>;
 
   return (
-    <div className="max-w-3xl mx-auto p-4">
+    <div className="max-w-3xl  p-4 font-sans">
       <h1 className="text-2xl font-semibold mb-4">
         Settings for Package: {packageData.name}
       </h1>

@@ -103,7 +103,7 @@ useEffect(() => {
 
   return (
     <div className="p-8 min-h-screen bg-purple-50">
-      <div className="max-w-xl mx-auto bg-white p-6 shadow-xl rounded-2xl">
+      <div className="max-w-xl  bg-white p-6 shadow-xl rounded-2xl">
         <h1 className="text-2xl font-bold mb-4">Edit Chapter</h1>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -115,7 +115,7 @@ useEffect(() => {
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Enter title"
               required
-              className="w-full p-2 border rounded"
+              className="form-control"
             />
           </div>
 
@@ -126,7 +126,7 @@ useEffect(() => {
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Enter description"
               required
-              className="w-full p-2 border rounded h-32"
+              className="form-control"
             />
           </div>
 
@@ -137,7 +137,7 @@ useEffect(() => {
   value={duration}
   onChange={(e) => setDuration(e.target.value)}
   placeholder="e.g., 5 min"
-  className="w-full p-2 border rounded"
+  className="form-control"
 />
 
           </div>
@@ -149,7 +149,7 @@ useEffect(() => {
               value={orderIndex}
               onChange={(e) => setOrderIndex(Number(e.target.value))}
               placeholder="Enter order index"
-              className="w-full p-2 border rounded"
+              className="form-control"
             />
           </div>
 
@@ -162,13 +162,26 @@ useEffect(() => {
             <span>Is Free Preview</span>
           </label>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
-          >
-            {loading ? 'Updating...' : 'Update Chapter'}
-          </button>
+  <div className="flex justify-end mb-4 gap-3">
+<button
+  type="button"
+  onClick={() => router.back()}
+  className="btn btn-secondary"
+>
+  Close
+</button>
+
+
+  <button
+    type="submit"
+    disabled={loading}
+    className="btn btn-primary"
+  >
+    {loading ? 'Updating...' : 'Update Chapter'}
+  </button>
+</div>
+
+
         </form>
       </div>
     </div>

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import api from "@/app/lib/api";
 import { ChevronDown, ChevronUp, File, Link2 } from "lucide-react";
 
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = "http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000";
 interface Package {
   id: number;
   name?: string;
@@ -97,11 +97,11 @@ const fetchWebinars = async () => {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-6 font-sans">
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
         <h2 className="text-3xl font-bold text-gray-800 flex items-center">
-          🎥 Webinar List
+           Webinar List
         </h2>
         <button
           onClick={() => router.push("/dashboard/webinars/create")}
@@ -131,7 +131,7 @@ const fetchWebinars = async () => {
                   className="w-full h-40 object-cover"
                 />
               )}
-
+  
               <div className="p-5 flex flex-col flex-grow">
                 <h3 className="text-xl font-semibold text-gray-800 mb-1">
                   {webinar.title}
@@ -206,6 +206,7 @@ const fetchWebinars = async () => {
                     {webinar.resources && webinar.resources.length > 0 ? (
                       webinar.resources.map((r) => {
                         const fileUrl = `${BASE_URL}${r.resourceUrl}`;
+                        
                         return (
                           <div key={r.id} className="py-1 border-b last:border-none">
                             {r.resourceUrl.match(/\.(jpg|jpeg|png|gif)$/i) ? (
@@ -245,13 +246,13 @@ const fetchWebinars = async () => {
                     }
                     className="px-3 py-2 bg-gray-200 text-gray-800 rounded-lg text-sm font-medium hover:bg-gray-300 transition"
                   >
-                    ✏️ Edit
+                     Edit
                   </button>
                   <button
                     onClick={() => handleDelete(webinar.id)}
                     className="px-3 py-2 bg-gray-200 text-gray-800 rounded-lg text-sm font-medium hover:bg-gray-300 transition"
                   >
-                    🗑️ Delete
+                     Delete
                   </button>
                 </div>
 
@@ -265,7 +266,7 @@ const fetchWebinars = async () => {
                     }
                     className="w-full px-3 py-2 bg-gray-800 text-white rounded-lg text-sm font-medium hover:bg-gray-900 transition"
                   >
-                    📁 Manage Resources
+                     Manage Resources
                   </button>
                 </div>
               </div>

@@ -83,8 +83,8 @@ const statusBadge = (status: number) => {
 
 
   return (
-    <div className="p-8">
-      <h1 className="text-3xl font-bold mb-6">Registered Students</h1>
+    <div className="p-8 font-sans">
+      <h2 className="text-3xl font-bold mb-4">Registered Students</h2>
 
       {loading ? (
         <p>Loading...</p>

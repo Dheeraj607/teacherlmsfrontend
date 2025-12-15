@@ -39,6 +39,20 @@ interface Package {
 export default function DashboardPage() {
   const router = useRouter();
 
+ useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+
+    if (!token) {
+      router.replace("/");  // redirect instantly
+      return;               // ⛔ no API call
+    }
+
+    loadDashboardData();    // only run if token exists
+  }, []);
+
+
+
+  
   const [upcomingWebinars, setUpcomingWebinars] = useState<Webinar[]>([]);
   const [latestStudents, setLatestStudents] = useState<Student[]>([]);
   const [latestPackage, setLatestPackage] = useState<Package | null>(null);
@@ -116,7 +130,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="p-8 overflow-auto">
+   <div className="p-8 overflow-auto font-sans">
       {/* Token & Idle warnings */}
       {tokenReady && (
         <div className="fixed top-2 right-2 p-2 bg-gray-200 rounded shadow">
@@ -129,12 +143,14 @@ export default function DashboardPage() {
         </div>
       )}
 
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">Teacher Dashboard</h1>
+      <h2 className="text-2xl font-semibold mb-4">Table Overview</h2>
+
+
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Upcoming Webinars */}
         <div className="bg-white p-5 shadow rounded-lg hover:shadow-lg transition duration-200">
-          <h2 className="text-lg font-semibold mb-3">Upcoming Webinars</h2>
+          <h4 className="text-lg font-semibold mb-4">Upcoming Webinars</h4>
           {upcomingWebinars.length > 0 ? (
             <ul className="space-y-2 text-sm text-gray-700">
               {upcomingWebinars.map((w) => (
@@ -159,13 +175,13 @@ export default function DashboardPage() {
               ))}
             </ul>
           ) : (
-            <p className="text-gray-500 text-sm">No webinars scheduled.</p>
+            <p className="mb-4">No webinars scheduled.</p>
           )}
         </div>
 
         {/* Latest Students */}
         <div className="bg-white p-5 shadow rounded-lg hover:shadow-lg transition duration-200">
-          <h2 className="text-lg font-semibold mb-3">Latest Students</h2>
+          <h4 className=" mb-4">Latest Students</h4>
           {latestStudents.length > 0 ? (
             <ul className="space-y-1 text-sm text-gray-700">
               {latestStudents.map((s) => (
@@ -175,7 +191,7 @@ export default function DashboardPage() {
               ))}
             </ul>
           ) : (
-            <p className="text-gray-500 text-sm">No students registered yet.</p>
+            <p className="mb-4">No students registered yet.</p>
           )}
         </div>
 
@@ -192,7 +208,11 @@ export default function DashboardPage() {
               </div>
               <div className="p-5 flex flex-col flex-grow">
                 <h3 className="text-xl font-semibold text-gray-800 mb-1">{latestPackage.name}</h3>
-                <p className="text-gray-600 text-sm mb-3 line-clamp-3">{latestPackage.description}</p>
+                <div
+  className="text-gray-600 text-sm mb-3 line-clamp-3"
+  dangerouslySetInnerHTML={{ __html: latestPackage.description || "" }}
+></div>
+
                 <p className="text-lg font-bold text-gray-800 mb-4">
                   {latestPackage.paymentSettings?.currency || "₹"} {latestPackage.paymentSettings?.price || 0}
                 </p>
@@ -201,37 +221,37 @@ export default function DashboardPage() {
                     onClick={() => router.push(`/dashboard/packages/edit/${latestPackage.id}`)}
                     className="px-3 py-2 bg-gray-200 text-gray-800 rounded-lg text-sm font-medium hover:bg-gray-300 transition"
                   >
-                    ✏️ Edit
+                     Edit
                   </button>
                   <button
                     onClick={() => handleDelete(latestPackage.id)}
                     className="px-3 py-2 bg-gray-200 text-gray-800 rounded-lg text-sm font-medium hover:bg-gray-300 transition"
                   >
-                    🗑️ Delete
+                     Delete
                   </button>
                   <button
                     onClick={() => router.push(`/dashboard/package-settings/${latestPackage.id}`)}
                     className="px-3 py-2 bg-gray-200 text-gray-800 rounded-lg text-sm font-medium hover:bg-gray-300 transition"
                   >
-                    ⚙️ Settings
+                     Settings
                   </button>
                   <button
                     onClick={() => router.push(`/dashboard/package-payment-settings/${latestPackage.id}`)}
                     className="px-3 py-2 bg-gray-200 text-gray-800 rounded-lg text-sm font-medium hover:bg-gray-300 transition"
                   >
-                    💳 Payment
+                     Payment
                   </button>
                 </div>
               </div>
             </>
           ) : (
-            <p className="p-5 text-gray-500 text-sm">No package created yet.</p>
+            <p className="p-5 mb-4">No package created yet.</p>
           )}
         </div>
 
         {/* Earnings */}
         <div className="bg-white p-5 shadow rounded-lg hover:shadow-lg transition duration-200">
-          <h2 className="text-lg font-semibold mb-3">Earnings</h2>
+          <h4 className=" mb-4">Earnings</h4>
           <div className="text-gray-700 text-sm space-y-1">
             <p>
               📆 {earnings.currentMonthName} :

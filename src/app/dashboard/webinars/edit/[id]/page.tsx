@@ -180,7 +180,7 @@ export default function EditWebinarPage() {
               e.target.value = "";
             }}
             value=""
-            className="w-full p-2 border rounded shadow-sm"
+            className="form-select"
           >
             <option value="">-- Select a package --</option>
             {packages
@@ -201,6 +201,7 @@ export default function EditWebinarPage() {
             value={webinarData.title}
             onChange={handleChange}
             required
+             className="form-control"
           />
         </div>
 
@@ -225,6 +226,7 @@ export default function EditWebinarPage() {
               value={webinarData.date}
               onChange={handleChange}
               required
+               className="form-control"
             />
           </div>
           <div>
@@ -235,6 +237,7 @@ export default function EditWebinarPage() {
               value={webinarData.time}
               onChange={handleChange}
               required
+               className="form-control"
             />
           </div>
           <div>
@@ -245,6 +248,7 @@ export default function EditWebinarPage() {
               value={webinarData.duration}
               onChange={handleChange}
               required
+               className="form-control"
             />
           </div>
         </div>
@@ -258,6 +262,7 @@ export default function EditWebinarPage() {
             value={webinarData.meetingLink}
             onChange={handleChange}
             required
+             className="form-control"
           />
         </div>
 
@@ -325,14 +330,24 @@ export default function EditWebinarPage() {
 
 
         {/* Buttons */}
-        <div className="flex justify-end gap-4 mt-8">
-          <Button type="button" onClick={handleCancel} variant="outline">
-            Cancel
-          </Button>
-          <Button type="submit" disabled={submitting}>
-            {submitting ? "Updating..." : "💾 Update Webinar"}
-          </Button>
-        </div>
+<div className="flex justify-end gap-4 mt-8">
+  <button
+    type="button"
+    onClick={handleCancel}
+    className="btn btn-secondary"
+  >
+    Cancel
+  </button>
+
+  <button
+    type="submit"
+    disabled={submitting}
+    className="btn btn-primary"
+  >
+    {submitting ? "Updating..." : " Update Webinar"}
+  </button>
+</div>
+
       </form>
     </div>
   );

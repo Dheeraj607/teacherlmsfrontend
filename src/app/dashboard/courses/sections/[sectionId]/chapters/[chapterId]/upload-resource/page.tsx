@@ -33,7 +33,7 @@ export default function UploadChapterResourcePage() {
   const chapterId = params.chapterId as string;
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const BACKEND_URL = "http://localhost:3000";
+  const BACKEND_URL = "http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000";
 
   const [resourceForm, setResourceForm] = useState<ResourceForm>({
     resourceType: "",
@@ -288,10 +288,10 @@ const handleMove = async (id: number, direction: "up" | "down") => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gray-100  p-4 font-sans">
       <div className="bg-white rounded-xl shadow-lg p-8 max-w-4xl w-full">
         <h2 className="text-3xl font-bold text-gray-800 mb-6">
-          Add Resources for Chapters: <span className="text-blue-600">{chapterId}</span>
+          Add Resources for Chapters: <span className="text-blue-600"></span>
         </h2>
 
         {error && (

@@ -81,10 +81,10 @@ const onSubmit = async (fd: FormData): Promise<{ id: number }> => {
 };
 
 
-  return (
-    <div className="p-6">
-      <h2 className="text-2xl font-semibold mb-4">Create Webinar</h2>
-      <WebinarForm onSubmit={onSubmit} loggedInUserId={teacherId} />
-    </div>
-  );
+    return (
+      <div className="p-6 font-sans ">
+        <h2 className="text-2xl font-semibold mb-4">Create Webinar</h2>
+        <WebinarForm onSubmit={onSubmit} loggedInUserId={teacherId} />
+      </div>
+    );
 }

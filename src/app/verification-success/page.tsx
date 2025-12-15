@@ -115,7 +115,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000";
 
 export default function VerificationSuccessPage() {
   const router = useRouter();

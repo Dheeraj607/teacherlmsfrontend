@@ -50,7 +50,7 @@ export default function CourseForm({ onSubmit }: CourseFormProps) {
       }
 
       try {
-        const res = await axios.get("http://localhost:3000/packages", {
+        const res = await axios.get("http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000/packages", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setPackages(res.data);
@@ -77,7 +77,7 @@ export default function CourseForm({ onSubmit }: CourseFormProps) {
 
     try {
       const res = await axios.post(
-        "http://localhost:3000/upload/thumbnail",
+        "http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000/upload/thumbnail",
         formData,
         {
           headers: {
@@ -186,7 +186,7 @@ export default function CourseForm({ onSubmit }: CourseFormProps) {
 
       try {
         const res = await axios.post(
-          "http://localhost:3000/upload/thumbnail",
+          "http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000/upload/thumbnail",
           formData,
           {
             headers: {

@@ -52,7 +52,7 @@ export default function EditCoursePage() {
     const fetchData = async () => {
       try {
         // Fetch course details
-        const courseRes = await axios.get(`http://localhost:3000/courses/${id}`, {
+        const courseRes = await axios.get(`http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000/courses/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const c = courseRes.data?.data ?? courseRes.data;
@@ -67,8 +67,8 @@ export default function EditCoursePage() {
 
         // Fetch languages & packages
         const [langRes, pkgRes] = await Promise.all([
-          axios.get("http://localhost:3000/languages", { headers: { Authorization: `Bearer ${token}` } }),
-          axios.get("http://localhost:3000/packages", { headers: { Authorization: `Bearer ${token}` } }),
+          axios.get("http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000/languages", { headers: { Authorization: `Bearer ${token}` } }),
+          axios.get("http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000/packages", { headers: { Authorization: `Bearer ${token}` } }),
         ]);
 
         setLanguages(Array.isArray(langRes.data) ? langRes.data : langRes.data.languages ?? []);
@@ -132,7 +132,7 @@ export default function EditCoursePage() {
         formData.append("thumbnailUrl", thumbnailPreview);
       }
 
-      const res = await axios.put(`http://localhost:3000/courses/${id}`, formData, {
+      const res = await axios.put(`http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000/courses/${id}`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
@@ -163,7 +163,7 @@ export default function EditCoursePage() {
   if (loading) return <div className="text-center text-gray-600 p-8">Loading course...</div>;
 
   return (
-    <div className="relative min-h-screen bg-purple-50 py-12 px-6 overflow-hidden">
+    <div className="relative min-h-screen bg-purple-50 py-12 px-6 overflow-hidden font-sans">
       <div className="relative z-10 max-w-5xl mx-auto bg-white p-10 md:p-12 rounded-2xl shadow-2xl">
         <h1 className="text-3xl font-bold mb-2 text-gray-800">Edit Course</h1>
         <p className="text-gray-600 mb-10 text-sm">Edit the details of your course and update its settings.</p>
@@ -306,21 +306,22 @@ export default function EditCoursePage() {
           </div>
         </div>
 
-        {/* Buttons */}
-        <div className="mt-10 flex justify-end gap-4">
-          <Button
-            onClick={handleCancel}
-            className="px-8 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 text-md rounded-md"
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={handleUpdateCourse}
-            className="px-8 py-2 bg-purple-600 hover:bg-purple-700 text-white text-md rounded-md"
-          >
-            Update Course
-          </Button>
-        </div>
+     {/* Buttons */}
+<div className="mt-10 flex justify-end gap-4">
+  <Button
+    onClick={handleCancel}
+    className="btn btn-secondary"
+  >
+    Cancel
+  </Button>
+
+  <Button
+    onClick={handleUpdateCourse}
+    className="btn btn-primary"
+  >
+    Update Course
+  </Button>
+</div>
       </div>
     </div>
   );

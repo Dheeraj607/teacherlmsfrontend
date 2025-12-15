@@ -15,7 +15,7 @@ interface Package {
 export default function PackageList() {
   const [packages, setPackages] = useState<Package[]>([]);
   const router = useRouter();
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000"
 
   useEffect(() => {
     fetchPackages();

@@ -30,9 +30,9 @@ export default function PackagePaymentSettingsPage() {
   if (!packageData) return <p>Package not found.</p>;
 
   return (
-    <div className="max-w-3xl mx-auto p-4">
+    <div className="max-w-3xl  p-4  font-sans">
       <h1 className="text-2xl font-semibold mb-4">
-        Payment Settings for Package: {packageData.name}
+        Payment  for Package: {packageData.name}
       </h1>
 
       {packageId && <PackagePaymentSettingsForm packageId={packageId} />}

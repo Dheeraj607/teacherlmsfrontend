@@ -21,7 +21,7 @@ interface Package {
 export default function PackageListPage() {
   const [packages, setPackages] = useState<Package[]>([]);
   const router = useRouter();
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000"
   useEffect(() => {
     fetchPackages();
   }, []);
@@ -50,10 +50,10 @@ const fetchPackages = async () => {
   };
 
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-8">
+    <div className="p-6 font-sans">
+      <div className="flex justify-between items-center mb-4">
         <h2 className="text-3xl font-bold text-gray-800 flex items-center">
-          📦 Package List
+          Package List
         </h2>
         <button
           onClick={() => router.push("/dashboard/packages/create")}
@@ -66,71 +66,82 @@ const fetchPackages = async () => {
       {packages.length === 0 ? (
         <p className="text-gray-500 text-lg">No packages found.</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {packages.map((pkg) => (
-            <div
-              key={pkg.id}
-              className="bg-white shadow-lg rounded-2xl overflow-hidden hover:shadow-xl transition flex flex-col"
-            >
-              {/* Cover Image */}
-              <div className="relative w-full h-48 bg-gray-100">
-                <img
-                  src={pkg.coverImage || "/placeholder.png"}
-                  alt={pkg.name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-
-              {/* Content */}
-              <div className="p-5 flex flex-col flex-grow">
-                <h3 className="text-xl font-semibold text-gray-800 mb-1">
-                  {pkg.name}
-                </h3>
-                <p className="text-gray-600 text-sm mb-3 line-clamp-3">
-                  {pkg.description}
-                </p>
-<p className="text-lg font-bold text-gray-800 mb-4">
-  {pkg.currency || '₹'} {pkg.sellingPrice}
-</p>
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+  {packages.map((pkg) => (
+    <div
+      key={pkg.id}
+      className="bg-white shadow-lg rounded-2xl overflow-hidden flex flex-col hover:shadow-xl transition"
+    >
+      {/* Cover Image */}
+      <div className="w-full h-60 bg-gray-100 flex-shrink-0">
+<img
+  src={pkg.coverImage || "/placeholder.png"}
+  alt={pkg.name}
+  className="w-full h-full object-cover"
+/>
 
 
-                {/* Actions */}
-                <div className="mt-auto grid grid-cols-2 gap-2">
-                  <button
-                    onClick={() =>
-                      router.push(`/dashboard/packages/edit/${pkg.id}`)
-                    }
-                    className="px-3 py-2 bg-gray-200 text-gray-800 rounded-lg text-sm font-medium hover:bg-gray-300 transition"
-                  >
-                    ✏️ Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(pkg.id)}
-                    className="px-3 py-2 bg-gray-200 text-gray-800 rounded-lg text-sm font-medium hover:bg-gray-300 transition"
-                  >
-                    🗑️ Delete
-                  </button>
-                  <button
-                    onClick={() =>
-                      router.push(`/dashboard/package-settings/${pkg.id}`)
-                    }
-                    className="px-3 py-2 bg-gray-200 text-gray-800 rounded-lg text-sm font-medium hover:bg-gray-300 transition"
-                  >
-                    ⚙️ Settings
-                  </button>
-                  <button
-                    onClick={() =>
-                      router.push(`/dashboard/package-payment-settings/${pkg.id}`)
-                    }
-                    className="px-3 py-2 bg-gray-200 text-gray-800 rounded-lg text-sm font-medium hover:bg-gray-300 transition"
-                  >
-                    💳 Payment
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
+
+      </div>
+
+      {/* Content */}
+      <div className="p-5 flex flex-col flex-grow">
+        <h3 className="text-xl font-semibold text-gray-800 mb-2">
+          {pkg.name}
+        </h3>
+
+        {/* Description */}
+<div
+  className="text-gray-700 text-sm mb-4 h-20 overflow-hidden line-clamp-3"
+  dangerouslySetInnerHTML={{ __html: pkg.description || "" }}
+/>
+
+
+
+
+        {/* Price */}
+        <p className="text-lg font-bold text-gray-800 mb-4">
+          {pkg.currency || '₹'} {pkg.sellingPrice}
+        </p>
+
+        {/* Actions */}
+        <div className="grid grid-cols-2 gap-2 mt-auto">
+          <button
+            onClick={() =>
+              router.push(`/dashboard/packages/edit/${pkg.id}`)
+            }
+            className="px-3 py-2 bg-gray-200 text-gray-800 rounded-lg text-sm font-medium hover:bg-gray-300 transition"
+          >
+            Edit
+          </button>
+          <button
+            onClick={() => handleDelete(pkg.id)}
+            className="px-3 py-2 bg-gray-200 text-gray-800 rounded-lg text-sm font-medium hover:bg-gray-300 transition"
+          >
+            Delete
+          </button>
+          <button
+            onClick={() =>
+              router.push(`/dashboard/package-settings/${pkg.id}`)
+            }
+            className="px-3 py-2 bg-gray-200 text-gray-800 rounded-lg text-sm font-medium hover:bg-gray-300 transition"
+          >
+            Settings
+          </button>
+          <button
+            onClick={() =>
+              router.push(`/dashboard/package-payment-settings/${pkg.id}`)
+            }
+            className="px-3 py-2 bg-gray-200 text-gray-800 rounded-lg text-sm font-medium hover:bg-gray-300 transition"
+          >
+            Payment
+          </button>
         </div>
+      </div>
+    </div>
+  ))}
+</div>
+
       )}
     </div>
   );

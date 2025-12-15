@@ -22,7 +22,7 @@ export default function EditSectionPage() {
     async function fetchSection() {
       try {
         if (!sectionId) return;
-        const res = await axios.get(`http://localhost:3000/sections/${sectionId}`);
+        const res = await axios.get(`http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000/sections/${sectionId}`);
         const data = res.data;
         setTitle(data.title);
         setDescription(data.description);
@@ -71,8 +71,8 @@ export default function EditSectionPage() {
   }
 
   return (
-    <div className="p-8 min-h-screen bg-purple-50">
-      <div className="max-w-xl mx-auto bg-white p-6 shadow-xl rounded-2xl">
+    <div className="p-8 min-h-screen bg-purple-50 font-sans">
+      <div className="max-w-xl  bg-white p-6 shadow-xl rounded-2xl">
         <h1 className="text-2xl font-bold mb-6">Edit Section</h1>
 
         <div className="mb-4">
@@ -81,7 +81,7 @@ export default function EditSectionPage() {
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full p-3 border border-purple-300 rounded-md"
+            className="form-control"
             placeholder="Enter section title"
           />
         </div>
@@ -97,7 +97,7 @@ export default function EditSectionPage() {
             type="number"
             value={orderIndex}
             onChange={(e) => setOrderIndex(parseInt(e.target.value))}
-            className="w-full p-3 border border-purple-300 rounded-md"
+            className="form-control"
             min={1}
           />
         </div>
@@ -105,13 +105,13 @@ export default function EditSectionPage() {
         <div className="flex justify-end gap-3">
           <button
             onClick={handleCancel}
-            className="bg-gray-300 text-gray-800 px-6 py-3 rounded-lg hover:bg-gray-400"
+            className="btn btn-secondary"
           >
             Cancel
           </button>
           <button
             onClick={handleSubmit}
-            className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700"
+            className="btn btn-primary"
           >
             Update Section
           </button>

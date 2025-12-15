@@ -44,7 +44,7 @@ useEffect(() => {
     if (!oldPhone || oldPhone === phone) return;
 
     try {
-      await axios.post("http://localhost:3000/users/update-phone", {
+      await axios.post("http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000/users/update-phone", {
         oldPhone,
         newPhone: phone,
       });
@@ -61,7 +61,7 @@ const handleSubmit = async (e: React.FormEvent) => {
   try {
     await handleUpdatePhone();
 
-    const res = await axios.post("http://localhost:3000/users/verify-otp", {
+    const res = await axios.post("http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000/users/verify-otp", {
       phone,
       otp,
     });
@@ -95,7 +95,7 @@ const handleSubmit = async (e: React.FormEvent) => {
   // ✅ Resend OTP logic
   const handleResendOtp = async () => {
     try {
-      await axios.post("http://localhost:3000/users/resend-otp", { phone });
+      await axios.post("http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000/users/resend-otp", { phone });
       alert("✅ OTP resent successfully!");
       setTimer(120);
     } catch (error: any) {

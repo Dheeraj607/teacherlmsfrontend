@@ -207,6 +207,8 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import api from "@/app/lib/api";
+import TextEditor from "@/app/components/TextEditor";
+
 
 interface PackageFormProps {
   existing?: any;
@@ -299,16 +301,21 @@ export default function PackageForm({ existing, onSuccess, onCancel }: PackageFo
      
 
         {/* Description (full width) */}
-        <div className="md:col-span-2 mb-4">
-          <textarea
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            className="form-control w-full px-4 py-2 rounded border border-gray-300 focus:border-purple-600 focus:ring-1 focus:ring-purple-600 transition resize-none"
-            placeholder="Write a short description..."
-            rows={3}
-          />
-        </div>
+     <div className="md:col-span-2 mb-4">
+  <label className="font-semibold mb-1 block">Description</label>
+
+  <div className="form-control p-0" style={{ height: "auto" }}>
+    <TextEditor
+      value={formData.description}
+      onChange={(value: string) =>
+        setFormData({ ...formData, description: value })
+      }
+    />
+  </div>
+
+  <small className="text-gray-500">Write a short description here…</small>
+</div>
+
 
         {/* Cover Image (full width) */}
         <div className="md:col-span-2">
@@ -326,7 +333,7 @@ export default function PackageForm({ existing, onSuccess, onCancel }: PackageFo
                 src={preview}
                 alt="Preview"
                 className="rounded shadow"
-                style={{ maxHeight: "150px" }}
+                style={{ maxHeight: "200px" }}
               />
             </div>
           )}
