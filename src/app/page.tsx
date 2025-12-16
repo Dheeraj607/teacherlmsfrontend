@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import api from "@/utils/axiosInstance";
+// import api from "@/utils/axiosInstance";
 
 interface Package {
   id: number;
@@ -25,7 +25,7 @@ interface Package {
 export default function PackageListPage() {
   const [packages, setPackages] = useState<Package[]>([]);
   const router = useRouter();
-
+ const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const getStatus = (backendStatus: string, fromDate?: string | null, toDate?: string | null) => {
     if (backendStatus.toLowerCase() !== "active") return "Inactive";
     if (!fromDate && !toDate) return "Active";
@@ -47,17 +47,31 @@ export default function PackageListPage() {
 
   const formatDate = (date?: string) => (date ? new Date(date).toLocaleDateString() : "-");
 
-  useEffect(() => {
+  // useEffect(() => {
+  //   const fetchPackages = async () => {
+  //     try {
+  //       const res = await api.get("/admin-packages");
+  //       setPackages(res.data);
+  //     } catch (err) {
+  //       console.error("Error fetching packages:", err);
+  //     }
+  //   };
+  //   fetchPackages();
+  // }, []);
+
+    useEffect(() => {
     const fetchPackages = async () => {
       try {
-        const res = await api.get("/admin-packages");
-        setPackages(res.data);
+        const res = await fetch(`${API_URL}/admin-packages`);
+        if (!res.ok) throw new Error("Failed to fetch packages");
+        const data = await res.json();
+        setPackages(data);
       } catch (err) {
         console.error("Error fetching packages:", err);
       }
     };
     fetchPackages();
-  }, []);
+  }, [API_URL]);
 
   return (
     <div
@@ -96,9 +110,10 @@ export default function PackageListPage() {
           <p className="text-gray-500 text-center col-span-full">No packages available.</p>
         ) : (
           packages.map((pkg) => {
-            const imageUrl = pkg.imageName
-              ? `http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000/uploads/adminpackage/${pkg.imageName.replace(/\\/g, "/")}`
-              : "/placeholder.png";
+          const imageUrl = pkg.imageName
+  ? `${API_URL}/uploads/adminpackage/${pkg.imageName.replace(/\\/g, "/")}`
+  : "/placeholder.png";
+
 
             const originalRate = Number(pkg.pricing?.rate ?? 0);
             const discount = Number(pkg.pricing?.discount ?? 0);

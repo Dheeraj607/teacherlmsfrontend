@@ -1,7 +1,7 @@
 import axios, { InternalAxiosRequestConfig } from "axios";
 
 const api = axios.create({
-  baseURL: "http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000", // change if your backend runs on another port
+  baseURL: "http://ec2-15-206-165-29.ap-south-1.compute.amazonaws.com:3000", // change if your backend runs on another port
 });
 
 // ✅ Request interceptor with correct types

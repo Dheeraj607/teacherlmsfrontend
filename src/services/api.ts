@@ -13,7 +13,7 @@ const processQueue = (err: any, token: string | null = null) => {
 };
 
 const api = axios.create({
-  baseURL: "http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000",
+  baseURL: "http://ec2-15-206-165-29.ap-south-1.compute.amazonaws.com:3000",
   headers: { "Content-Type": "application/json" },
 });
 
