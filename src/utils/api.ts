@@ -1,8 +1,13 @@
 import axios from "axios";
 
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://d1ojm6zdv3m37g.cloudfront.net";
+
 const api = axios.create({
-  baseURL: "http://ec2-15-206-165-29.ap-south-1.compute.amazonaws.com:3000", // ✅ your NestJS API
+  baseURL: API_URL,
 });
+
 
 // 🔒 Automatically include JWT token for all requests
 api.interceptors.request.use((config) => {
