@@ -60,6 +60,7 @@ export default function PackageListPage() {
   // }, []);
 
     useEffect(() => {
+      console.log("API_URL =", API_URL);
     const fetchPackages = async () => {
       try {
         const res = await fetch(`${API_URL}/admin-packages`);
