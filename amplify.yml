@@ -3,10 +3,12 @@ frontend:
   phases:
     preBuild:
       commands:
-        - export NODE_OPTIONS="--max-old-space-size=4096"
+        - echo "Setting Node memory to 8192 MB"
+        - export NODE_OPTIONS="--max-old-space-size=8192"
         - npm ci --cache .npm --prefer-offline
     build:
       commands:
+        - echo "Building Next.js app"
         - npm run build
   artifacts:
     baseDirectory: .next
