@@ -3,9 +3,9 @@ frontend:
   phases:
     preBuild:
       commands:
-        - echo "Setting Node memory to 8192 MB"
-        - export NODE_OPTIONS="--max-old-space-size=8192"
-        - npm ci --cache .npm --prefer-offline
+        - echo "Optimized install for Amplify"
+        - export NODE_OPTIONS="--max-old-space-size=4096"
+        - npm install --legacy-peer-deps --no-audit --no-fund
     build:
       commands:
         - echo "Building Next.js app"
@@ -17,4 +17,4 @@ frontend:
   cache:
     paths:
       - .next/cache/**/*
-      - .npm/**/*
+      - node_modules/**/*
