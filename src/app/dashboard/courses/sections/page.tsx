@@ -1,12 +1,13 @@
 "use client";
 
-import SectionListClient from './SectionListClient';
+import SectionListClient from "./SectionListClient";
 
-export const dynamic = "force-dynamic"; // ✅ important, prevents SSG/SSR
+export const dynamic = "force-dynamic"; // prevents SSR/SSG
 
 export default function Page() {
   return <SectionListClient />;
 }
+
 
 
 

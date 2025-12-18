@@ -15,20 +15,18 @@ interface Section {
 export default function SectionListClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const API_URL: string = process.env.NEXT_PUBLIC_API_URL || "http://ec2-15-206-165-29.ap-south-1.compute.amazonaws.com:3000";
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://ec2-15-206-165-29.ap-south-1.compute.amazonaws.com:3000";
 
   const [courseId, setCourseId] = useState<number | null>(null);
   const [sections, setSections] = useState<Section[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Get courseId from URL params
   useEffect(() => {
     const cid = searchParams.get("courseId");
     if (cid) setCourseId(Number(cid));
     setLoading(false);
   }, [searchParams]);
 
-  // Fetch sections when courseId is set
   useEffect(() => {
     if (!courseId) return;
 
@@ -46,7 +44,6 @@ export default function SectionListClient() {
     fetchSections();
   }, [courseId]);
 
-  // Navigation & actions
   const goToCreate = () => courseId && router.push(`/dashboard/courses/sections/create?courseId=${courseId}`);
 
   const handleDelete = async (id: number) => {
@@ -131,6 +128,7 @@ export default function SectionListClient() {
     </div>
   );
 }
+
 
 
 
