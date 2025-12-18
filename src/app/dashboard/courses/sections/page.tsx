@@ -1,17 +1,10 @@
-import dynamic from 'next/dynamic';
+"use client"; // ← make this a client component
 
-const SectionListClient = dynamic(
-  () => import('./SectionListClient'),
-  { ssr: false }
-);
-
-export const dynamicPage = 'force-dynamic'; // ✅ renamed
-// or remove it entirely if you use ssr: false in dynamic
+import SectionListClient from './SectionListClient';
 
 export default function Page() {
   return <SectionListClient />;
 }
-
 
 
 
