@@ -1,7 +1,10 @@
 // app/dashboard/courses/sections/page.tsx
-"use client";
+import dynamic from "next/dynamic";
 
-import SectionListClient from "./SectionListClient";
+const SectionListClient = dynamic(
+  () => import("./SectionListClient"),
+  { ssr: false } // This disables server-side rendering
+);
 
 export default function Page() {
   return <SectionListClient />;

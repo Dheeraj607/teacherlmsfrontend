@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import api from "@/app/lib/api";
 import { ChevronDown, ChevronUp, File, Link2 } from "lucide-react";
 
-const BASE_URL = "http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000";
+const BASE_URL = "https://d1ojm6zdv3m37g.cloudfront.net";
 interface Package {
   id: number;
   name?: string;
