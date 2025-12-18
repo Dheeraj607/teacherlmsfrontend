@@ -21,15 +21,16 @@ export default function SectionListClient() {
   const [sections, setSections] = useState<Section[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // ✅ Get courseId from URL
   useEffect(() => {
     const cid = searchParams.get("courseId");
     if (cid) setCourseId(Number(cid));
     setLoading(false);
   }, [searchParams]);
 
+  // ✅ Fetch sections only on client
   useEffect(() => {
     if (!courseId) return;
-
     const fetchSections = async () => {
       try {
         const res = await fetch(`${API_URL}/sections/getByCourseId/${courseId}`);
@@ -37,15 +38,17 @@ export default function SectionListClient() {
         const data = await res.json();
         setSections(data.sort((a: Section, b: Section) => a.order_index - b.order_index));
       } catch (err) {
-        console.error("Error fetching sections:", err);
+        console.error(err);
       }
     };
-
     fetchSections();
   }, [courseId]);
 
-  const goToCreate = () => courseId && router.push(`/dashboard/courses/sections/create?courseId=${courseId}`);
+  if (loading) return <p className="text-center mt-10">Loading...</p>;
+  if (!courseId) return <p className="text-center mt-10">Course ID missing.</p>;
 
+  // Actions
+  const goToCreate = () => courseId && router.push(`/dashboard/courses/sections/create?courseId=${courseId}`);
   const handleDelete = async (id: number) => {
     if (!confirm("Are you sure you want to delete this section?")) return;
     try {
@@ -55,7 +58,6 @@ export default function SectionListClient() {
       console.error(err);
     }
   };
-
   const changeOrder = async (id: number, direction: "up" | "down") => {
     try {
       await fetch(`${API_URL}/sections/${id}/change-order`, {
@@ -72,9 +74,7 @@ export default function SectionListClient() {
     }
   };
 
-  if (loading) return <p className="text-center mt-10">Loading...</p>;
-  if (!courseId) return <p className="text-center mt-10">Course ID missing.</p>;
-
+  // ✅ Render sections
   return (
     <div className="min-h-screen bg-purple-50 p-8 flex justify-start items-start font-sans">
       <div className="w-full max-w-4xl bg-white shadow-lg rounded-2xl p-6 space-y-6">

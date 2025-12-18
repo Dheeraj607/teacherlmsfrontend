@@ -1,12 +1,18 @@
 "use client";
 
+import { Suspense } from "react";
 import SectionListClient from "./SectionListClient";
 
-export const dynamic = "force-dynamic"; // prevents SSR/SSG
+export const dynamic = "force-dynamic";
 
 export default function Page() {
-  return <SectionListClient />;
+  return (
+    <Suspense fallback={<p className="text-center mt-10">Loading sections...</p>}>
+      <SectionListClient />
+    </Suspense>
+  );
 }
+
 
 
 
