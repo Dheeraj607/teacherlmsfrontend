@@ -6,6 +6,13 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { PencilSquareIcon, TrashIcon, ArrowUpIcon, ArrowDownIcon } from '@heroicons/react/24/solid';
 import { BookOpenText } from 'lucide-react';
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+
+if (!API_BASE_URL) {
+  throw new Error("NEXT_PUBLIC_API_URL is not defined");
+}
+
+
 interface Section {
   id: number;
   title: string;
@@ -32,7 +39,7 @@ export default function SectionListPage() {
 
     const fetchSections = async () => {
       try {
-        const res = await fetch(`http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000/sections/getByCourseId/${courseId}`);
+        const res = await fetch(`${API_BASE_URL}/sections/getByCourseId/${courseId}`);
         const data = await res.json();
         setSections(data.sort((a: Section, b: Section) => a.order_index - b.order_index));
       } catch (err) {
@@ -50,7 +57,7 @@ export default function SectionListPage() {
   const handleDelete = async (id: number) => {
     if (!confirm("Are you sure you want to delete this section?")) return;
     try {
-      await fetch(`http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000/sections/${id}`, { method: "DELETE" });
+      await fetch(`${API_BASE_URL}/sections/${id}`, { method: "DELETE" });
       setSections(prev => prev.filter(s => s.id !== id));
     } catch (err) {
       console.error("Error deleting section:", err);
@@ -59,14 +66,14 @@ export default function SectionListPage() {
 
   const changeOrder = async (id: number, direction: 'up' | 'down') => {
     try {
-      await fetch(`http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000/sections/${id}/change-order`, {
+      await fetch(`${API_BASE_URL}/sections/${id}/change-order`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ direction }),
       });
 
       if (courseId !== null) {
-        const refreshed = await fetch(`http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000/sections/getByCourseId/${courseId}`);
+        const refreshed = await fetch(`${API_BASE_URL}/sections/getByCourseId/${courseId}`);
         const updated = await refreshed.json();
         setSections(updated.sort((a: Section, b: Section) => a.order_index - b.order_index));
       }

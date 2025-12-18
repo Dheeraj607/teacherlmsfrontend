@@ -5,6 +5,13 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import CKEditorInput from "@/app/components/CKEditorInput";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+
+if (!API_BASE_URL) {
+  throw new Error("NEXT_PUBLIC_API_URL is not defined");
+}
+
+
 export default function EditSectionPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -22,7 +29,7 @@ export default function EditSectionPage() {
     async function fetchSection() {
       try {
         if (!sectionId) return;
-        const res = await axios.get(`http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000/sections/${sectionId}`);
+        const res = await axios.get(`${API_BASE_URL}/sections/${sectionId}`);
         const data = res.data;
         setTitle(data.title);
         setDescription(data.description);
@@ -42,7 +49,7 @@ export default function EditSectionPage() {
     }
 
     try {
-      await axios.put(`http://localhost:3000/sections/${sectionId}`, {
+      await axios.put(`${API_BASE_URL}/sections/${sectionId}`, {
         title,
         description,
         order_index: orderIndex,

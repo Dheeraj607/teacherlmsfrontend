@@ -33,7 +33,7 @@ export default function UploadChapterResourcePage() {
   const chapterId = params.chapterId as string;
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const BACKEND_URL = "http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000";
+  const BACKEND_URL = "https://d1ojm6zdv3m37g.cloudfront.net";
 
   const [resourceForm, setResourceForm] = useState<ResourceForm>({
     resourceType: "",

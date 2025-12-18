@@ -29,7 +29,7 @@ export default function CourseListPage() {
   const [loading, setLoading] = useState(true);
   const [packagesList, setPackagesList] = useState<Package[]>([]);
   const [selectedPackageId, setSelectedPackageId] = useState<number | "">("");
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000";
+ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL!;
 
   useEffect(() => {
     fetchCourses();

@@ -12,9 +12,16 @@ const processQueue = (err: any, token: string | null = null) => {
   queue = [];
 };
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+
+if (!API_BASE_URL) {
+  throw new Error("NEXT_PUBLIC_API_URL is not defined");
+}
+
 const api = axios.create({
-  baseURL: "http://ec2-15-206-165-29.ap-south-1.compute.amazonaws.com:3000",
+  baseURL: API_BASE_URL,
   headers: { "Content-Type": "application/json" },
+  withCredentials: true,
 });
 
 // Attach access token

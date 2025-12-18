@@ -5,6 +5,13 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import CKEditorInput from "@/app/components/CKEditorInput";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+
+if (!API_BASE_URL) {
+  throw new Error("NEXT_PUBLIC_API_URL is not defined");
+}
+
+
 export default function CreateSectionPage() {
   const router = useRouter();
   // const searchParams = useSearchParams();
@@ -30,7 +37,7 @@ useEffect(() => {
     }
 
     try {
-      await fetch("http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000/sections", {
+      await fetch(`${API_BASE_URL}/sections`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
