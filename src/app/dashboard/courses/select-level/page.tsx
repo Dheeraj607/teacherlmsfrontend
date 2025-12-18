@@ -4,6 +4,13 @@ export const dynamic = 'force-dynamic';
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+
+if (!API_BASE_URL) {
+  throw new Error("NEXT_PUBLIC_API_URL is not defined");
+}
+
+
 interface Level {
   id: number;
   level_name: string;
@@ -25,7 +32,7 @@ export default function SelectLevelPage() {
   useEffect(() => {
     const fetchLevels = async () => {
       try {
-        const res = await fetch("http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000/course-levels");
+        const res = await fetch(`${API_BASE_URL}/course-levels`);
         const data = await res.json();
         if (Array.isArray(data)) {
           setLevels(data);
@@ -55,7 +62,7 @@ export default function SelectLevelPage() {
     }
 
     try {
-      await fetch("http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000/course-level-mappings", {
+      await fetch(`${API_BASE_URL}/course-level-mappings`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(

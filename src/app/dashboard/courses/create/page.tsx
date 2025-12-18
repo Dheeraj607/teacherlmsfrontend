@@ -9,6 +9,13 @@ import { useEffect, useState } from "react";
 import CKEditorInput from "@/app/components/CKEditorInput";
 import axios from "axios";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+
+if (!API_BASE_URL) {
+  throw new Error("NEXT_PUBLIC_API_URL is not defined");
+}
+
+
 interface Language {
   id: number;
   name?: string;
@@ -49,10 +56,10 @@ export default function CreateCoursePage() {
     const fetchData = async () => {
       try {
         const [langRes, pkgRes] = await Promise.all([
-          axios.get("http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000/languages", {
+          axios.get(`${API_BASE_URL}/languages`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          axios.get("http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000/packages", {
+          axios.get(`${API_BASE_URL}/packages`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
         ]);
@@ -117,7 +124,7 @@ const handleSaveAndNext = async () => {
     }
 
     // ✅ FIXED: correct endpoint
-    const res = await axios.post("http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000/courses", formData, {
+    const res = await axios.post(`${API_BASE_URL}/courses`, formData, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",

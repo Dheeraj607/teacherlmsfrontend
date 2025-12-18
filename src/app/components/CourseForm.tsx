@@ -7,6 +7,13 @@ import axios from "axios";
 import router from "next/router";
 import { Label } from "@radix-ui/react-label";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+
+if (!API_BASE_URL) {
+  throw new Error("NEXT_PUBLIC_API_URL is not defined");
+}
+
+
 interface CourseFormProps {
   onSubmit: (formData: any) => void;
   editCourse?: Course | null;
@@ -50,7 +57,7 @@ export default function CourseForm({ onSubmit }: CourseFormProps) {
       }
 
       try {
-        const res = await axios.get("http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000/packages", {
+        const res = await axios.get(`${API_BASE_URL}/packages`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setPackages(res.data);
@@ -77,7 +84,7 @@ export default function CourseForm({ onSubmit }: CourseFormProps) {
 
     try {
       const res = await axios.post(
-        "http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000/upload/thumbnail",
+        `${API_BASE_URL}/upload/thumbnail`,
         formData,
         {
           headers: {
@@ -186,7 +193,7 @@ export default function CourseForm({ onSubmit }: CourseFormProps) {
 
       try {
         const res = await axios.post(
-          "http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000/upload/thumbnail",
+          `${API_BASE_URL}/upload/thumbnail`,
           formData,
           {
             headers: {

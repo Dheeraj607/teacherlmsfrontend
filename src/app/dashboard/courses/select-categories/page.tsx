@@ -4,6 +4,13 @@ export const dynamic = 'force-dynamic';
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+
+if (!API_BASE_URL) {
+  throw new Error("NEXT_PUBLIC_API_URL is not defined");
+}
+
+
 interface Category {
   id: number;
   name: string;
@@ -26,7 +33,7 @@ export default function SelectCategoriesPage() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch("http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000/category");
+        const res = await fetch(`${API_BASE_URL}/category`);
         const data = await res.json();
         if (Array.isArray(data)) setCategories(data);
       } catch (error) {
@@ -49,7 +56,7 @@ export default function SelectCategoriesPage() {
     }
 
     try {
-      await fetch("http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000/course-category-mappings", {
+      await fetch(`${API_BASE_URL}/course-category-mappings`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(
