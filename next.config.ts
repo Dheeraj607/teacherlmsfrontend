@@ -41,8 +41,8 @@ const nextConfig: NextConfig = {
         pathname: "/**",
       },
       {
-        protocol: "http",
-        hostname: "ec2-13-234-30-113.ap-south-1.compute.amazonaws.com",
+        protocol: "https",
+        hostname: "https://d1ojm6zdv3m37g.cloudfront.net",
         port: "3000",
         pathname: "/**",
       },
