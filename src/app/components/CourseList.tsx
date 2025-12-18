@@ -24,7 +24,7 @@ export default function CourseList() {
   const fetchCourses = async () => {
     try {
       setLoading(true);
-      const res = await axios.get<Course[]>("http://localhost:3001/courses");
+      const res = await axios.get<Course[]>("https://main.d17r891ad3pi6t.amplifyapp.com/courses");
       setCourses(res.data);
     } catch (err) {
       console.error("❌ Failed to fetch courses:", err);

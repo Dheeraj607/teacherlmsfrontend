@@ -5,6 +5,10 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 
 export default function WebinarResourceForm() {
+
+    const API_URL =
+    process.env.NEXT_PUBLIC_API_URL ||
+    "http://ec2-15-206-165-29.ap-south-1.compute.amazonaws.com:3000";
   const [file, setFile] = useState<File | null>(null);
   const [resourceName, setResourceName] = useState('');
   const [webinarId, setWebinarId] = useState('');
@@ -32,7 +36,7 @@ export default function WebinarResourceForm() {
       formData.append('resourceTypeId', resourceTypeId);
 
       const response = await axios.post(
-        'http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000/webinar-resources/upload',
+        `${API_URL}/webinar-resources/upload`,
         formData,
         {
           headers: {

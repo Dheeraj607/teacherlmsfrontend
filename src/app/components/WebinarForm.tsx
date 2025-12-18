@@ -610,6 +610,9 @@ interface WebinarFormProps {
 export default function CreateWebinarPage({ loggedInUserId, onSubmit }: WebinarFormProps) {
 
   const router = useRouter();
+    const API_URL =
+    process.env.NEXT_PUBLIC_API_URL ||
+    "http://ec2-15-206-165-29.ap-south-1.compute.amazonaws.com:3000";
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -642,7 +645,7 @@ export default function CreateWebinarPage({ loggedInUserId, onSubmit }: WebinarF
       if (!token) return setLoading(false);
 
       try {
-        const res = await axios.get('http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000/packages', {
+        const res = await axios.get(`${API_URL}/packages`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setPackages(res.data);
@@ -696,7 +699,7 @@ export default function CreateWebinarPage({ loggedInUserId, onSubmit }: WebinarF
       };
 
       const token = localStorage.getItem('accessToken');
-      const res = await axios.post('http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000/webinars', payload, {
+      const res = await axios.post(`${API_URL}/webinars`, payload, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

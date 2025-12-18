@@ -205,7 +205,7 @@ const fetchWebinars = async () => {
                   <div className="mt-3 bg-gray-50 rounded-lg p-3 border border-gray-200 max-h-40 overflow-y-auto">
                     {webinar.resources && webinar.resources.length > 0 ? (
                       webinar.resources.map((r) => {
-                        const fileUrl = `${BASE_URL}${r.resourceUrl}`;
+                        const fileUrl = `${r.resourceUrl}`;
                         
                         return (
                           <div key={r.id} className="py-1 border-b last:border-none">

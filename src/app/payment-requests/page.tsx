@@ -4,7 +4,9 @@ import { useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL_LOCAL || "http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000";
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://d1ojm6zdv3m37g.cloudfront.net";
 
 export default function TeacherPaymentRequestPage() {
   const [email, setEmail] = useState("");

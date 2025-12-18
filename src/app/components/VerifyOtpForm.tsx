@@ -6,6 +6,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 export default function VerifyOtpForm() {
   const searchParams = useSearchParams();
+    const API_URL =
+    process.env.NEXT_PUBLIC_API_URL ||
+    "http://ec2-15-206-165-29.ap-south-1.compute.amazonaws.com:3000";
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
   const [email, setEmail] = useState(""); // ✅ Added email state
@@ -44,7 +47,7 @@ useEffect(() => {
     if (!oldPhone || oldPhone === phone) return;
 
     try {
-      await axios.post("http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000/users/update-phone", {
+      await axios.post(`${API_URL}/users/update-phone`, {
         oldPhone,
         newPhone: phone,
       });
@@ -61,7 +64,7 @@ const handleSubmit = async (e: React.FormEvent) => {
   try {
     await handleUpdatePhone();
 
-    const res = await axios.post("http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000/users/verify-otp", {
+    const res = await axios.post(`${API_URL}/users/verify-otp`, {
       phone,
       otp,
     });
@@ -95,7 +98,7 @@ const handleSubmit = async (e: React.FormEvent) => {
   // ✅ Resend OTP logic
   const handleResendOtp = async () => {
     try {
-      await axios.post("http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000/users/resend-otp", { phone });
+      await axios.post(`${API_URL}/users/resend-otp`, { phone });
       alert("✅ OTP resent successfully!");
       setTimer(120);
     } catch (error: any) {

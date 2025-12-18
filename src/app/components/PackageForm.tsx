@@ -227,16 +227,26 @@ export default function PackageForm({ existing, onSuccess, onCancel }: PackageFo
   const [preview, setPreview] = useState<string | null>(null);
   const router = useRouter();
 
-  useEffect(() => {
-    if (existing) {
-      setFormData({
-        name: existing.name || "",
-        description: existing.description || "",
-        coverImage: null,
-      });
-      setPreview(existing.coverImage || null);
-    }
-  }, [existing]);
+  // useEffect(() => {
+  //   if (existing) {
+  //     setFormData({
+  //       name: existing.name || "",
+  //       description: existing.description || "",
+  //       coverImage: null,
+  //     });
+  //     setPreview(existing.coverImage || null);
+  //   }
+  // }, [existing]);
+useEffect(() => {
+  if (existing?.id) {
+    setFormData({
+      name: existing.name || "",
+      description: existing.description || "",
+      coverImage: null,
+    });
+    setPreview(existing.coverImage || null);
+  }
+}, [existing?.id]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, files } = e.target as any;

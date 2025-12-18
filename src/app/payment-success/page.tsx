@@ -10,16 +10,17 @@ const SuccessPage: React.FC = () => {
   const [transactionId, setTransactionId] = React.useState<string | null>(null);
 
 useEffect(() => {
-  const params = useSearchParams();
-  setTransactionId(params?.get("transactionId"));
+const searchParams = useSearchParams();
+const transactionId = searchParams.get("transactionId");
+
 }, []);
 
   const router = useRouter();
 
   const API_URL =
     process.env.NEXT_PUBLIC_API_URL_TUNNEL ||
-    process.env.NEXT_PUBLIC_API_URL_LOCAL ||
-    "hhttp://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000";
+    process.env.NEXT_PUBLIC_API_URL ||
+    "http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000";
 
   // ✅ Delete enrollment if payment is success
   const deleteEnrollment = async () => {

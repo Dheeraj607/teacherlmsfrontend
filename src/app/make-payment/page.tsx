@@ -274,7 +274,10 @@ interface CustomerDetails {
   customer_address: string;
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000";
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://d1ojm6zdv3m37g.cloudfront.net";
+
 const RAZORPAY_KEY = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_bgUFcUzfDPatTa";
 
 const Product: React.FC = () => {
@@ -315,7 +318,7 @@ const Product: React.FC = () => {
 
       setLoading(true);
       try {
-        const response = await fetch(`${API_BASE_URL}/payment-requests/order/${transactionId}`);
+        const response = await fetch(`${API_URL}/payment-requests/order/${transactionId}`);
         if (!response.ok) throw new Error("Failed to fetch order details.");
         const data: Order = await response.json();
 
@@ -379,7 +382,7 @@ const Product: React.FC = () => {
 
     // Update order with customer details on backend
     try {
-      const response = await fetch(`${API_BASE_URL}/payment-requests/order/${transactionId}`, {
+      const response = await fetch(`${API_URL}/payment-requests/order/${transactionId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(customerDetails),
