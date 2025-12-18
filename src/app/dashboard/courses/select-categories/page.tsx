@@ -1,13 +1,15 @@
-"use client";
-export const dynamic = "force-dynamic";
+// app/dashboard/courses/select-categories/page.tsx
 
-// Just render the client-only component
+import { Suspense } from "react";
 import SelectCategoriesClient from "./SelectCategoriesClient";
 
 export default function Page() {
-  return <SelectCategoriesClient />;
+  return (
+    <Suspense fallback={<div className="text-center mt-10">Loading categories...</div>}>
+      <SelectCategoriesClient />
+    </Suspense>
+  );
 }
-
 
 // "use client";
 // export const dynamic = 'force-dynamic';
