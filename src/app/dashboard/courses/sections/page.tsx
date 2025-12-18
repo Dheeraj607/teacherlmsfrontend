@@ -1,4 +1,3 @@
-
 "use client"; // <-- mark this page as client
 
 import SectionListClient from "./SectionListClient";
