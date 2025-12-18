@@ -204,32 +204,40 @@ const fetchWebinars = async () => {
                 {expandedId === webinar.id && (
                   <div className="mt-3 bg-gray-50 rounded-lg p-3 border border-gray-200 max-h-40 overflow-y-auto">
                     {webinar.resources && webinar.resources.length > 0 ? (
-                      webinar.resources.map((r) => {
-                        const fileUrl = `${r.resourceUrl}`;
-                        
-                        return (
-                          <div key={r.id} className="py-1 border-b last:border-none">
-                            {r.resourceUrl.match(/\.(jpg|jpeg|png|gif)$/i) ? (
-                              <img
-                                src={fileUrl}
-                                alt={r.resourceName}
-                                className="w-full rounded-lg mb-2"
-                              />
-                            ) : (
-                              <a
-                                href={fileUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-2 text-sm text-gray-700 hover:text-gray-900"
-                              >
-                                <File size={14} />
-                                {r.resourceName}
-                                <Link2 size={12} className="ml-auto opacity-60" />
-                              </a>
-                            )}
-                          </div>
-                        );
-                      })
+webinar.resources.map((r) => {
+  const isYouTube =
+    r.resourceUrl.includes("youtube.com") ||
+    r.resourceUrl.includes("youtu.be");
+
+  // 👉 Files get BASE_URL, YouTube does NOT
+  const fileUrl = isYouTube
+    ? r.resourceUrl
+    : `${BASE_URL}${r.resourceUrl}`;
+
+  return (
+    <div key={r.id} className="py-1 border-b last:border-none">
+      {r.resourceUrl.match(/\.(jpg|jpeg|png|gif)$/i) ? (
+        <img
+          src={fileUrl}
+          alt={r.resourceName}
+          className="w-full rounded-lg mb-2"
+        />
+      ) : (
+        <a
+          href={fileUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 text-sm text-gray-700 hover:text-gray-900"
+        >
+          <File size={14} />
+          {r.resourceName}
+          <Link2 size={12} className="ml-auto opacity-60" />
+        </a>
+      )}
+    </div>
+  );
+})
+
                     ) : (
                       <p className="text-gray-400 text-sm text-center">
                         No resources uploaded. Please manage the resources.
