@@ -1,4 +1,3 @@
-  
 "use client";
 
 import { useState, useEffect } from "react";
@@ -6,15 +5,15 @@ import { useRouter } from "next/navigation";
 import api from "@/app/lib/api";
 import TextEditor from "@/app/components/TextEditor";
 
-
 interface PackageFormProps {
   existing?: any;
   onSuccess: () => void;
   onCancel?: () => void;
-  
 }
 
 export default function PackageForm({ existing, onSuccess, onCancel }: PackageFormProps) {
+  const router = useRouter();
+
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -22,30 +21,22 @@ export default function PackageForm({ existing, onSuccess, onCancel }: PackageFo
   });
 
   const [preview, setPreview] = useState<string | null>(null);
-  const router = useRouter();
 
-  // useEffect(() => {
-  //   if (existing) {
-  //     setFormData({
-  //       name: existing.name || "",
-  //       description: existing.description || "",
-  //       coverImage: null,
-  //     });
-  //     setPreview(existing.coverImage || null);
-  //   }
-  // }, [existing]);
-useEffect(() => {
-  if (existing?.id) {
-    setFormData({
-      name: existing.name || "",
-      description: existing.description || "",
-      coverImage: null,
-    });
-    setPreview(existing.coverImage || null);
-  }
-}, [existing?.id]);
+  // Autofill when editing
+  useEffect(() => {
+    if (existing) {
+      setFormData({
+        name: existing.name || "",
+        description: existing.description || "",
+        coverImage: null, // file input cannot be prefilled
+      });
+      setPreview(existing.coverImage || null);
+    }
+  }, [existing]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     const { name, value, files } = e.target as any;
     if (name === "coverImage" && files) {
       const file = files[0];
@@ -72,9 +63,13 @@ useEffect(() => {
     try {
       let response;
       if (existing?.id) {
-        response = await api.put(`/packages/${existing.id}`, data, { headers: { "Content-Type": "multipart/form-data" } });
+        response = await api.put(`/packages/${existing.id}`, data, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
       } else {
-        response = await api.post("/packages", data, { headers: { "Content-Type": "multipart/form-data" } });
+        response = await api.post("/packages", data, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
       }
 
       onSuccess();
@@ -87,46 +82,39 @@ useEffect(() => {
 
   return (
     <form
-  onSubmit={handleSubmit}
-  className="addnewform p-4 bg-white rounded-lg shadow-md max-w-2xl"
-  style={{ marginLeft: "5px" }}
->
-
+      onSubmit={handleSubmit}
+      className="addnewform p-4 bg-white rounded-lg shadow-md max-w-2xl"
+      style={{ marginLeft: "5px" }}
+    >
       <div className="md:col-span-2">
         {/* Package Name */}
-<div className="mb-4">
-  <input
-    type="text"
-    name="name"
-    value={formData.name}
-    onChange={handleChange}
-    className="form-control w-full px-4 py-2 rounded border border-gray-300 focus:border-purple-600 focus:ring-1 focus:ring-purple-600 transition"
-    placeholder="Enter package name"
-  />
-</div>
+        <div className="mb-4">
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            className="form-control w-full px-4 py-2 rounded border border-gray-300 focus:border-purple-600 focus:ring-1 focus:ring-purple-600 transition"
+            placeholder="Enter package name"
+          />
+        </div>
 
-     
+        {/* Description */}
+        <div className="md:col-span-2 mb-4">
+          <label className="font-semibold mb-1 block">Description</label>
+          <div className="form-control p-0" style={{ height: "auto" }}>
+            <TextEditor
+              value={formData.description}
+              onChange={(value: string) =>
+                setFormData({ ...formData, description: value })
+              }
+            />
+          </div>
+          <small className="text-gray-500">Write a short description here…</small>
+        </div>
 
-        {/* Description (full width) */}
-     <div className="md:col-span-2 mb-4">
-  <label className="font-semibold mb-1 block">Description</label>
-
-  <div className="form-control p-0" style={{ height: "auto" }}>
-    <TextEditor
-      value={formData.description}
-      onChange={(value: string) =>
-        setFormData({ ...formData, description: value })
-      }
-    />
-  </div>
-
-  <small className="text-gray-500">Write a short description here…</small>
-</div>
-
-
-        {/* Cover Image (full width) */}
+        {/* Cover Image */}
         <div className="md:col-span-2">
-          {/*    */}
           <input
             type="file"
             name="coverImage"
@@ -149,13 +137,13 @@ useEffect(() => {
 
       {/* Footer Buttons */}
       <div className="mt-4 flex justify-end gap-2">
-      <button
-  type="button"
-  className="btn btn-secondary"
-  onClick={() => router.back()} // go back to previous page
->
-  Close
-</button>
+        <button
+          type="button"
+          className="btn btn-secondary"
+          onClick={() => (onCancel ? onCancel() : router.back())}
+        >
+          Close
+        </button>
 
         <button type="submit" className="btn btn-primary">
           {existing ? "Update" : "Create"}
@@ -164,6 +152,173 @@ useEffect(() => {
     </form>
   );
 }
+
+// "use client";
+
+// import { useState, useEffect } from "react";
+// import { useRouter } from "next/navigation";
+// import api from "@/app/lib/api";
+// import TextEditor from "@/app/components/TextEditor";
+
+
+// interface PackageFormProps {
+//   existing?: any;
+//   onSuccess: () => void;
+//   onCancel?: () => void;
+  
+// }
+
+// export default function PackageForm({ existing, onSuccess, onCancel }: PackageFormProps) {
+//   const [formData, setFormData] = useState({
+//     name: "",
+//     description: "",
+//     coverImage: null as File | null,
+//   });
+
+//   const [preview, setPreview] = useState<string | null>(null);
+//   const router = useRouter();
+
+//   // useEffect(() => {
+//   //   if (existing) {
+//   //     setFormData({
+//   //       name: existing.name || "",
+//   //       description: existing.description || "",
+//   //       coverImage: null,
+//   //     });
+//   //     setPreview(existing.coverImage || null);
+//   //   }
+//   // }, [existing]);
+// useEffect(() => {
+//   if (existing) {
+//     setFormData({
+//       name: existing.name || "",
+//       description: existing.description || "",
+//       coverImage: null, // don't overwrite the file input
+//     });
+//     setPreview(existing.coverImage || null);
+//   }
+// }, [existing]); // watch the full object, not just existing.id
+
+
+//   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+//     const { name, value, files } = e.target as any;
+//     if (name === "coverImage" && files) {
+//       const file = files[0];
+//       setFormData({ ...formData, coverImage: file });
+//       setPreview(URL.createObjectURL(file));
+//     } else {
+//       setFormData({ ...formData, [name]: value });
+//     }
+//   };
+
+//   const handleSubmit = async (e: React.FormEvent) => {
+//     e.preventDefault();
+
+//     if (!formData.name.trim()) {
+//       alert("Package name is required");
+//       return;
+//     }
+
+//     const data = new FormData();
+//     data.append("name", formData.name);
+//     data.append("description", formData.description);
+//     if (formData.coverImage) data.append("file", formData.coverImage);
+
+//     try {
+//       let response;
+//       if (existing?.id) {
+//         response = await api.put(`/packages/${existing.id}`, data, { headers: { "Content-Type": "multipart/form-data" } });
+//       } else {
+//         response = await api.post("/packages", data, { headers: { "Content-Type": "multipart/form-data" } });
+//       }
+
+//       onSuccess();
+//       if (!existing) router.push(`/dashboard/package-payment-settings/${response.data.id}`);
+//     } catch (err: any) {
+//       console.error(err);
+//       alert("Failed to submit package: " + (err.response?.data?.message || "Unknown error"));
+//     }
+//   };
+
+//   return (
+//     <form
+//   onSubmit={handleSubmit}
+//   className="addnewform p-4 bg-white rounded-lg shadow-md max-w-2xl"
+//   style={{ marginLeft: "5px" }}
+// >
+
+//       <div className="md:col-span-2">
+//         {/* Package Name */}
+// <div className="mb-4">
+//   <input
+//     type="text"
+//     name="name"
+//     value={formData.name}
+//     onChange={handleChange}
+//     className="form-control w-full px-4 py-2 rounded border border-gray-300 focus:border-purple-600 focus:ring-1 focus:ring-purple-600 transition"
+//     placeholder="Enter package name"
+//   />
+// </div>
+
+     
+
+//         {/* Description (full width) */}
+//      <div className="md:col-span-2 mb-4">
+//   <label className="font-semibold mb-1 block">Description</label>
+
+//   <div className="form-control p-0" style={{ height: "auto" }}>
+//     <TextEditor
+//       value={formData.description}
+//       onChange={(value: string) =>
+//         setFormData({ ...formData, description: value })
+//       }
+//     />
+//   </div>
+
+//   <small className="text-gray-500">Write a short description here…</small>
+// </div>
+
+
+//         {/* Cover Image (full width) */}
+//         <div className="md:col-span-2">
+//           {/*    */}
+//           <input
+//             type="file"
+//             name="coverImage"
+//             accept="image/*"
+//             onChange={handleChange}
+//             className="form-control w-full"
+//           />
+//           {preview && (
+//             <div className="mt-3 flex justify-center">
+//               <img
+//                 src={preview}
+//                 alt="Preview"
+//                 className="rounded shadow"
+//                 style={{ maxHeight: "200px" }}
+//               />
+//             </div>
+//           )}
+//         </div>
+//       </div>
+
+//       {/* Footer Buttons */}
+//       <div className="mt-4 flex justify-end gap-2">
+//       <button
+//   type="button"
+//   className="btn btn-secondary"
+//   onClick={() => router.back()} // go back to previous page
+// >
+//   Close
+// </button>
+
+//         <button type="submit" className="btn btn-primary">
+//           {existing ? "Update" : "Create"}
+//         </button>
+//       </div>
+//     </form>
+//   );
+// }
 
   
   
