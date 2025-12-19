@@ -69,32 +69,13 @@ useEffect(() => {
     data.append("description", formData.description);
     if (formData.coverImage) data.append("file", formData.coverImage);
 
-    // try {
-    //   let response;
-    //   if (existing?.id) {
-    //     response = await api.put(`/packages/${existing.id}`, data, { headers: { "Content-Type": "multipart/form-data" } });
-    //   } else {
-    //     response = await api.post("/packages", data, { headers: { "Content-Type": "multipart/form-data" } });
-    //   }
     try {
-  let response;
-  const backendUrl = "http://ec2-65-2-81-181.ap-south-1.compute.amazonaws.com:3000/packages";
-
-  if (existing?.id) {
-    // Update package
-    response = await api.put(
-      `${backendUrl}/${existing.id}`,
-      data,
-      { headers: { "Content-Type": "multipart/form-data" } }
-    );
-  } else {
-    // Create package
-    response = await api.post(
-      backendUrl,
-      data,
-      { headers: { "Content-Type": "multipart/form-data" } }
-    );
-  }
+      let response;
+      if (existing?.id) {
+        response = await api.put(`/packages/${existing.id}`, data, { headers: { "Content-Type": "multipart/form-data" } });
+      } else {
+        response = await api.post("/packages", data, { headers: { "Content-Type": "multipart/form-data" } });
+      }
 
       onSuccess();
       if (!existing) router.push(`/dashboard/package-payment-settings/${response.data.id}`);
