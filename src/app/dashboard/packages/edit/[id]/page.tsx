@@ -60,6 +60,7 @@ export default function EditPackagePage() {
         {/* Form */}
         <PackageForm
           //key={id}
+          key={existing?.id}  
           existing={existing}
           onCancel={handleCancel}
           onSuccess={handleSuccess}

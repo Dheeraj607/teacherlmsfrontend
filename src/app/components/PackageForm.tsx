@@ -24,6 +24,7 @@ export default function PackageForm({ existing, onSuccess, onCancel }: PackageFo
 
   // Autofill when editing
   useEffect(() => {
+    console.log("PackageForm existing prop:", existing);
     if (existing) {
       setFormData({
         name: existing.name || "",
