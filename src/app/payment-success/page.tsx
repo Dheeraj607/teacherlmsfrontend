@@ -10,10 +10,11 @@ const SuccessPage: React.FC = () => {
   const [transactionId, setTransactionId] = React.useState<string | null>(null);
 
 useEffect(() => {
-const searchParams = useSearchParams();
-const transactionId = searchParams.get("transactionId");
-
+  const searchParams = useSearchParams();
+  const id = searchParams.get("transactionId");
+  if (id) setTransactionId(id);
 }, []);
+
 
   const router = useRouter();
 
