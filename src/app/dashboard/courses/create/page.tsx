@@ -9,11 +9,9 @@ import { useEffect, useState } from "react";
 import CKEditorInput from "@/app/components/CKEditorInput";
 import axios from "axios";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-
-if (!API_BASE_URL) {
-  throw new Error("NEXT_PUBLIC_API_URL is not defined");
-}
+ const API_URL =
+    process.env.NEXT_PUBLIC_API_URL ||
+    "https://d1ojm6zdv3m37g.cloudfront.net";
 
 
 interface Language {
@@ -56,10 +54,10 @@ export default function CreateCoursePage() {
     const fetchData = async () => {
       try {
         const [langRes, pkgRes] = await Promise.all([
-          axios.get(`${API_BASE_URL}/languages`, {
+          axios.get(`${API_URL}/languages`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
-          axios.get(`${API_BASE_URL}/packages`, {
+          axios.get(`${API_URL}/packages`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
         ]);
@@ -124,7 +122,7 @@ const handleSaveAndNext = async () => {
     }
 
     // ✅ FIXED: correct endpoint
-    const res = await axios.post(`${API_BASE_URL}/courses`, formData, {
+    const res = await axios.post(`${API_URL}/courses`, formData, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",

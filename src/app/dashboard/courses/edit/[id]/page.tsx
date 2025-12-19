@@ -9,11 +9,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-
-if (!API_BASE_URL) {
-  throw new Error("NEXT_PUBLIC_API_URL is not defined");
-}
+ const API_URL =
+    process.env.NEXT_PUBLIC_API_URL ||
+    "https://d1ojm6zdv3m37g.cloudfront.net";
 
 
 interface Language {
@@ -59,7 +57,7 @@ export default function EditCoursePage() {
     const fetchData = async () => {
       try {
         // Fetch course details
-        const courseRes = await axios.get(`${API_BASE_URL}/courses/${id}`, {
+        const courseRes = await axios.get(`${API_URL}/courses/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const c = courseRes.data?.data ?? courseRes.data;
@@ -74,8 +72,8 @@ export default function EditCoursePage() {
 
         // Fetch languages & packages
         const [langRes, pkgRes] = await Promise.all([
-          axios.get(`${API_BASE_URL}/languages`, { headers: { Authorization: `Bearer ${token}` } }),
-          axios.get(`${API_BASE_URL}/packages`, { headers: { Authorization: `Bearer ${token}` } }),
+          axios.get(`${API_URL}/languages`, { headers: { Authorization: `Bearer ${token}` } }),
+          axios.get(`${API_URL}/packages`, { headers: { Authorization: `Bearer ${token}` } }),
         ]);
 
         setLanguages(Array.isArray(langRes.data) ? langRes.data : langRes.data.languages ?? []);
@@ -139,7 +137,7 @@ export default function EditCoursePage() {
         formData.append("thumbnailUrl", thumbnailPreview);
       }
 
-      const res = await axios.put(`${API_BASE_URL}/courses/${id}`, formData, {
+      const res = await axios.put(`${API_URL}/courses/${id}`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
