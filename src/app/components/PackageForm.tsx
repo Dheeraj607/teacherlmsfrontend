@@ -59,17 +59,18 @@ export default function PackageForm({ existing, onSuccess, onCancel }: PackageFo
     const data = new FormData();
     data.append("name", formData.name);
     data.append("description", formData.description);
-    if (formData.coverImage) data.append("file", formData.coverImage);
+    if (formData.coverImage) data.append("coverImage", formData.coverImage);
+
 
     try {
       let response;
       if (existing?.id) {
         response = await api.put(`/packages/${existing.id}`, data, {
-          headers: { "Content-Type": "multipart/form-data" },
+          
         });
       } else {
         response = await api.post("/packages", data, {
-          headers: { "Content-Type": "multipart/form-data" },
+         
         });
       }
 
