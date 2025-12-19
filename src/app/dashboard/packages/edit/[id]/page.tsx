@@ -17,6 +17,7 @@ export default function EditPackagePage() {
     const fetchPackage = async () => {
       try {
         const res = await api.get(`/packages/${id}?t=${Date.now()}`);
+         console.log("Fetched package data:", res.data);
         setExisting(res.data);
       } catch (err) {
         console.error("Failed to fetch package:", err);
