@@ -16,7 +16,6 @@ const editorConfig = {
     "|",
     "bold",
     "italic",
-    "underline",
     "bulletedList",
     "numberedList",
     "blockQuote",
