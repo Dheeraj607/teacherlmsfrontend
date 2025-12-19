@@ -203,8 +203,7 @@
 
                     <div
                       className="text-sm text-gray-500 line-clamp-3 mb-3"
-                      dangerouslySetInnerHTML={{ __html: course.description || "" }}
-
+                      dangerouslySetInnerHTML={{ __html: course.description }}
                     />
 
                     {/* Actions */}
