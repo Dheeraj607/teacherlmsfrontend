@@ -13,6 +13,9 @@ interface PackageFormProps {
 
 export default function PackageForm({ existing, onSuccess, onCancel }: PackageFormProps) {
   const router = useRouter();
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
+const [fileError, setFileError] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -47,6 +50,33 @@ export default function PackageForm({ existing, onSuccess, onCancel }: PackageFo
       setFormData({ ...formData, [name]: value });
     }
   };
+
+  const handleChanges = (
+  e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+) => {
+  const { name, value, files } = e.target as any;
+
+  if (name === "coverImage" && files) {
+    const file = files[0];
+
+    // 🔴 5MB validation
+    if (file.size > MAX_FILE_SIZE) {
+      setFileError("Cover image must be less than 5 MB");
+      setFormData({ ...formData, coverImage: null });
+      setPreview(null);
+      e.target.value = ""; // reset file input
+      return;
+    }
+
+    // ✅ valid file
+    setFileError(null);
+    setFormData({ ...formData, coverImage: file });
+    setPreview(URL.createObjectURL(file));
+  } else {
+    setFormData({ ...formData, [name]: value });
+  }
+};
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -116,25 +146,36 @@ export default function PackageForm({ existing, onSuccess, onCancel }: PackageFo
         </div>
 
         {/* Cover Image */}
-        <div className="md:col-span-2">
-          <input
-            type="file"
-            name="coverImage"
-            accept="image/*"
-            onChange={handleChange}
-            className="form-control w-full"
-          />
-          {preview && (
-            <div className="mt-3 flex justify-center">
-              <img
-                src={preview}
-                alt="Preview"
-                className="rounded shadow"
-                style={{ maxHeight: "200px" }}
-              />
-            </div>
-          )}
-        </div>
+     {/* Cover Image */}
+<div className="md:col-span-2">
+  <input
+    type="file"
+    name="coverImage"
+    accept="image/*"
+    onChange={handleChanges}
+    className="form-control w-full"
+  />
+
+  {/* File size error */}
+  {fileError && (
+    <p className="text-red-600 text-sm mt-1">
+      {fileError}
+    </p>
+  )}
+
+  {/* Preview */}
+  {preview && (
+    <div className="mt-3 flex justify-center">
+      <img
+        src={preview}
+        alt="Preview"
+        className="rounded shadow"
+        style={{ maxHeight: "200px" }}
+      />
+    </div>
+  )}
+</div>
+
       </div>
 
       {/* Footer Buttons */}
