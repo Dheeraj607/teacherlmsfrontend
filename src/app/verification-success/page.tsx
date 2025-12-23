@@ -177,10 +177,10 @@ export default function VerificationSuccessPage() {
 
         {!isLoginFlow && packageData && (
           <div className="mb-3">
-            <p className="text-gray-800 font-semibold">
+            {/* <p className="text-gray-800 font-semibold">
               Selected Package: {packageData.name}
-            </p>
-            <p className="text-sm text-gray-600">Price: ₹{packageData.price}</p>
+            </p> */}
+            {/* <p className="text-sm text-gray-600">Price: ₹{packageData.price}</p> */}
           </div>
         )}
 

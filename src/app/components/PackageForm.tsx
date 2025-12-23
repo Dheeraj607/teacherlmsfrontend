@@ -11,6 +11,8 @@ interface PackageFormProps {
   onCancel?: () => void;
 }
 
+const CLOUD_FRONT_BASE = "https://d1ojm6zdv3m37g.cloudfront.net";
+
 export default function PackageForm({ existing, onSuccess, onCancel }: PackageFormProps) {
   const router = useRouter();
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -34,7 +36,11 @@ const [fileError, setFileError] = useState<string | null>(null);
         description: existing.description || "",
         coverImage: null, // file input cannot be prefilled
       });
-      setPreview(existing.coverImage || null);
+      setPreview(
+        existing.coverImage
+          ? `${CLOUD_FRONT_BASE}/uploads/packages/${existing.coverImage}`
+          : null
+      );
     }
   }, [existing]);
 
