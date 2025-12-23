@@ -26,17 +26,17 @@ const [fileError, setFileError] = useState<string | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
 
   // Autofill when editing
-useEffect(() => {
-  if (existing) {
-    setFormData({
-      name: existing.packageName || existing.name || "",
-      description: existing.description || "",
-      coverImage: null,
-    });
-    setPreview(existing.coverImage || null);
-  }
-}, [existing]);
-
+  useEffect(() => {
+    console.log("PackageForm existing prop:", existing);
+    if (existing) {
+      setFormData({
+        name: existing.name || "",
+        description: existing.description || "",
+        coverImage: null, // file input cannot be prefilled
+      });
+      setPreview(existing.coverImage || null);
+    }
+  }, [existing]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -44,10 +44,18 @@ useEffect(() => {
     const { name, value, files } = e.target as any;
     if (name === "coverImage" && files) {
       const file = files[0];
-      setFormData({ ...formData, coverImage: file });
+      setFormData((prev) => ({
+  ...prev,
+  coverImage: file,
+}));
+
       setPreview(URL.createObjectURL(file));
     } else {
-      setFormData({ ...formData, [name]: value });
+      setFormData((prev) => ({
+  ...prev,
+  [name]: value,
+}));
+
     }
   };
 
@@ -111,7 +119,11 @@ useEffect(() => {
             <TextEditor
               value={formData.description}
               onChange={(value: string) =>
-                setFormData({ ...formData, description: value })
+                setFormData((prev) => ({
+  ...prev,
+  description: value,
+}))
+
               }
             />
           </div>
