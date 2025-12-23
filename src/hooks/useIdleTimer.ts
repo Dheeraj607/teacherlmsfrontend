@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-
+import { cancelTokenRefreshTimer } from "@/services/authTimer"; 
 let idleTimeout: NodeJS.Timeout | null = null;
 let logoutCountdownInterval: NodeJS.Timeout | null = null;
 
-export const useIdleTimer = (idleTime = 24 * 60 * 60 * 1000,  logoutSeconds = 60) => {
+export const useIdleTimer = (idleTime = 60 * 60 * 1000, logoutSeconds = 60) => {
   const [showWarning, setShowWarning] = useState(false);
   const [countdown, setCountdown] = useState(logoutSeconds);
 
@@ -23,15 +23,21 @@ export const useIdleTimer = (idleTime = 24 * 60 * 60 * 1000,  logoutSeconds = 60
           console.log(`⏳ Logout in: ${prev}s`);
           if (prev <= 1) {
             clearInterval(logoutCountdownInterval!);
-            console.log("🔒 Logging out user due to inactivity");
-            window.location.href = "/auth/login"; // redirect to login
+
+            cancelTokenRefreshTimer();   // 🛑 stop refresh
+            localStorage.clear();        // 🧹 clear tokens
+
+            console.log("🔒 Logged out due to inactivity");
+            window.location.href = "/auth/login";
             return 0;
           }
+
           return prev - 1;
         });
       }, 1000);
     }, idleTime);
   };
+
 
   useEffect(() => {
     resetTimer();

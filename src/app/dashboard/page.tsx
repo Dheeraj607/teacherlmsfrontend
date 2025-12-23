@@ -38,21 +38,36 @@ interface Package {
 
 export default function DashboardPage() {
   const router = useRouter();
+useEffect(() => {
+  const token = localStorage.getItem("accessToken");
 
- useEffect(() => {
-    const token = localStorage.getItem("accessToken");
+  if (!token) {
+    router.replace("/");
+    return;
+  }
 
-    if (!token) {
-      router.replace("/");  // redirect instantly
-      return;               // ⛔ no API call
-    }
+  startTokenRefreshTimer(); // ✅ START refresh timer
+  loadDashboardData();      // ✅ Load dashboard data
 
-    loadDashboardData();    // only run if token exists
-  }, []);
+  return () => {
+    cancelTokenRefreshTimer(); // ✅ STOP refresh on unmount
+  };
+}, []);
+
+//  useEffect(() => {
+//     const token = localStorage.getItem("accessToken");
+
+//     if (!token) {
+//       router.replace("/");  // redirect instantly
+//       return;               // ⛔ no API call
+//     }
+
+//     loadDashboardData();    // only run if token exists
+//   }, []);
 
 
 
-  
+
   const [upcomingWebinars, setUpcomingWebinars] = useState<Webinar[]>([]);
   const [latestStudents, setLatestStudents] = useState<Student[]>([]);
   const [latestPackage, setLatestPackage] = useState<Package | null>(null);
@@ -67,14 +82,14 @@ export default function DashboardPage() {
   const { remaining, tokenReady } = useTokenManager();
   const { showWarning, countdown } = useIdleTimer();
 
-  useEffect(() => {
-    startTokenRefreshTimer(); // auto-refresh access token
-    return () => cancelTokenRefreshTimer();
-  }, []);
+  // useEffect(() => {
+  //   startTokenRefreshTimer(); // auto-refresh access token
+  //   return () => cancelTokenRefreshTimer();
+  // }, []);
 
-  useEffect(() => {
-    loadDashboardData();
-  }, []);
+  // useEffect(() => {
+  //   loadDashboardData();
+  // }, []);
 
   const loadDashboardData = async () => {
     try {
@@ -134,7 +149,7 @@ export default function DashboardPage() {
       {/* Token & Idle warnings */}
       {tokenReady && (
         <div className="fixed top-2 right-2 p-2 bg-gray-200 rounded shadow">
-          ⏱️ Token refresh in: {remaining}s
+          {/* ⏱️ Token refresh in: {remaining}s */}
         </div>
       )}
       {showWarning && (
@@ -155,11 +170,11 @@ export default function DashboardPage() {
             <ul className="space-y-2 text-sm text-gray-700">
               {upcomingWebinars.map((w) => (
                 <li key={w.id} className="border-b pb-2 last:border-b-0">
-                  <p className="font-semibold">📅 {w.title}</p>
-                  <p>🗓 Date: {new Date(w.date).toLocaleDateString()}</p>
-                  <p>⏰ Time: {w.time || "-"}</p>
+                  <p className="font-semibold">{w.title}</p>
+                  <p>Date: {new Date(w.date).toLocaleDateString()}</p>
+                  <p> Time: {w.time || "-"}</p>
                   {w.isRecurring && w.recurringType && (
-                    <p className="text-gray-500 italic">🔁 Recurring: {w.recurringType}</p>
+                    <p className="text-gray-500 italic">Recurring: {w.recurringType}</p>
                   )}
                   {w.meetingLink && (
                     <a
@@ -168,7 +183,7 @@ export default function DashboardPage() {
                       rel="noopener noreferrer"
                       className="text-blue-600 underline"
                     >
-                      🔗 Join Link
+                       Join Link
                     </a>
                   )}
                 </li>

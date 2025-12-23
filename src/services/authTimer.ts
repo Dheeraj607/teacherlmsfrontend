@@ -48,7 +48,8 @@
 
 
 let refreshTimer: NodeJS.Timeout | null = null;
-const REFRESH_URL = "http://localhost:3000/auth/refresh";
+const REFRESH_URL = `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`;
+
 
 export const startTokenRefreshTimer = () => {
   console.log("🔄 Starting token refresh timer");
