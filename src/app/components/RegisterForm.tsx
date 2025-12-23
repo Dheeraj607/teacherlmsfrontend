@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 // import axios from "axios";
 import { useRouter } from "next/navigation";
 import api from "../lib/api";
-
+import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from "react-datepicker";
 // const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 export default function RegisterForm() {
@@ -170,14 +171,23 @@ useEffect(() => {
     className="w-full px-3 py-2 border border-white rounded-md bg-transparent text-white placeholder-white focus:outline-none focus:border-blue-300"
   />
 
-  <input
-    type="date"
-    name="dob"
-    value={formData.dob}
-    onChange={handleChange}
-    required
-    className="w-full px-3 py-2 border border-white rounded-md bg-transparent text-white placeholder-white focus:outline-none focus:border-blue-300"
-  />
+<DatePicker
+  selected={formData.dob ? new Date(formData.dob) : null}
+  onChange={(date: Date | null) =>
+    setFormData({
+      ...formData,
+      dob: date ? date.toISOString().split("T")[0] : "",
+    })
+  }
+  dateFormat="dd-MM-yyyy"
+  placeholderText="Date of Birth"
+  showMonthDropdown
+  showYearDropdown
+  dropdownMode="select"
+  maxDate={new Date()}
+  required
+  className="w-full px-3 py-2 border border-white rounded-md bg-transparent text-white focus:outline-none focus:border-blue-300"
+/>
 </div>
 
 
