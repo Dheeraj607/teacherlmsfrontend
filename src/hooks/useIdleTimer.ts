@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 let idleTimeout: NodeJS.Timeout | null = null;
 let logoutCountdownInterval: NodeJS.Timeout | null = null;
 
-export const useIdleTimer = (idleTime = 60 * 60 * 1000, logoutSeconds = 60) => {
+export const useIdleTimer = (idleTime = 24 * 60 * 60 * 1000,  logoutSeconds = 60) => {
   const [showWarning, setShowWarning] = useState(false);
   const [countdown, setCountdown] = useState(logoutSeconds);
 
