@@ -11,7 +11,7 @@ interface PackageFormProps {
   onCancel?: () => void;
 }
 
-const CLOUD_FRONT_BASE = "https://d1ojm6zdv3m37g.cloudfront.net";
+
 
 export default function PackageForm({ existing, onSuccess, onCancel }: PackageFormProps) {
   const router = useRouter();
@@ -36,11 +36,7 @@ const [fileError, setFileError] = useState<string | null>(null);
         description: existing.description || "",
         coverImage: null, // file input cannot be prefilled
       });
-      setPreview(
-        existing.coverImage
-          ? `${CLOUD_FRONT_BASE}/uploads/packages/${existing.coverImage}`
-          : null
-      );
+      setPreview(existing.coverImage || null);
     }
   }, [existing]);
 
