@@ -26,17 +26,17 @@ const [fileError, setFileError] = useState<string | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
 
   // Autofill when editing
-  useEffect(() => {
-    console.log("PackageForm existing prop:", existing);
-    if (existing) {
-      setFormData({
-        name: existing.name || "",
-        description: existing.description || "",
-        coverImage: null, // file input cannot be prefilled
-      });
-      setPreview(existing.coverImage || null);
-    }
-  }, [existing]);
+useEffect(() => {
+  if (existing) {
+    setFormData({
+      name: existing.packageName || existing.name || "",
+      description: existing.description || "",
+      coverImage: null,
+    });
+    setPreview(existing.coverImage || null);
+  }
+}, [existing]);
+
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
