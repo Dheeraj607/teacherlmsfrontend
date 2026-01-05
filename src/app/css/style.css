@@ -134,3 +134,46 @@ html, body{overflow: inherit!important;}
 .btn-oval:hover {
   background-color: #15803d; /* darker green on hover */
 }
+
+
+.coursecard.card{border-radius: 1rem; box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px; border: none;}
+.coursecard.card .card-img, .coursecard.card .card-img-top{border-top-left-radius:1rem; border-top-right-radius:1rem;}
+.coursecard.card > .card-body{padding: 1.5rem;}
+.coursecard.card .btn{border-radius: 0.2rem; font-size: 13px;}
+.coursepackagecard.card {margin-bottom: 1rem;}
+.coursepackagecard.card ul{margin-bottom: 0; padding-left: 1rem;}
+.coursepackagecard.card ul li{font-size: 13px; padding: 0 0 0.5rem;}
+.coursepackagecard.card ul li:last-child{padding:0 0 0rem;}
+
+.webinarcard.card{border-radius: 1rem; box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px; border: none;}
+.webinarcard.card .card-img, .webinarcard.card .card-img-top{border-top-left-radius:1rem; border-top-right-radius:1rem;}
+.webinarcard.card .card-body{padding: 1.9rem;}
+.webinarcard.card .status{position: absolute; top: 0; right: 0; background:linear-gradient(to right, #464cc8 0%,#9428cc 100%); color:#fff; padding:0.2rem 1rem; border-top-right-radius:1rem; border-bottom-left-radius:0.5rem; font-size:12px; text-transform:uppercase; font-weight:500;  }
+.webinarcard.card .badge.package{background:linear-gradient(to right, #13e5da 0%,#9428cc 100%); padding:0.4rem 1rem; border-radius:1rem; color:#ffffff; font-weight:600; }
+.webinarcard.card .accordion-button{padding: 0; border-color: 0; font-size: 13px;}
+.webinarcard.card .accordion-button:not(.collapsed){background: none; box-shadow: none;}
+.webinarcard.card .accordion-button::before {flex-shrink: 0;
+    width: var(--bs-accordion-btn-icon-width);
+    height: var(--bs-accordion-btn-icon-width);
+/*    margin-right: auto;*/
+    content: "";
+    background-image: var(--bs-accordion-btn-icon);
+    background-repeat: no-repeat;
+    background-size: 1rem;
+    transition: var(--bs-accordion-btn-icon-transition);
+    background-position-y: 3px;
+    margin-right: 10px;
+}
+.webinarcard.card .accordion-button:not(.collapsed)::before {
+    background-image: var(--bs-accordion-btn-active-icon);
+    transform: var(--bs-accordion-btn-icon-transform);
+}
+.webinarcard.card .accordion-button::after{background-image: none;}
+.webinarcard.card .btn{border-radius: 0.2rem; font-size: 13px;}
+.alert .btn{font-size: 12px; border-radius: 0.4rem;}
+
+.profilecard.card{border-radius: 1rem; box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px; border: none;}
+.profilecard.card .card-body{padding: 2rem;}
+.profilecard.card .card-body dl dt{width: 40%; display: inline;}
+.profilecard.card .card-body dl dd{width: 45%; display: inline; padding-left: 10px;}
+

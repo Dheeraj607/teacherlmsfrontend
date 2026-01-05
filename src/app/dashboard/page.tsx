@@ -214,7 +214,7 @@ useEffect(() => {
         <div className="bg-white shadow-lg rounded-2xl overflow-hidden hover:shadow-xl transition flex flex-col">
           {latestPackage ? (
             <>
-              <div className="relative w-full h-48 bg-gray-100">
+              <div className="relative w-full h-100 bg-gray-100">
                 <img
                   src={latestPackage.coverImage || "/placeholder.png"}
                   alt={latestPackage.name}

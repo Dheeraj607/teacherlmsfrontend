@@ -44,6 +44,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import "@/app/css/style.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+
 import { Poppins } from "next/font/google";
 
 const geistSans = Geist({

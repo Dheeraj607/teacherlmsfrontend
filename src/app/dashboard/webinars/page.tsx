@@ -120,165 +120,149 @@ const fetchWebinars = async () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {webinars.map((webinar) => (
             <div
-              key={webinar.id}
-              className="bg-white shadow-lg rounded-2xl overflow-hidden hover:shadow-xl transition flex flex-col"
-            >
-              {/* Thumbnail */}
-              {webinar.thumbnail && (
-                <img
-                  src={webinar.thumbnail}
-                  alt={webinar.title}
-                  className="w-full h-40 object-cover"
-                />
-              )}
-  
-              <div className="p-5 flex flex-col flex-grow">
-                <h3 className="text-xl font-semibold text-gray-800 mb-1">
-                  {webinar.title}
-                </h3>
+  key={webinar.id}
+  className="webinarcard card relative bg-white shadow-lg rounded-2xl overflow-hidden hover:shadow-xl transition flex flex-col"
+>
+  {/* Thumbnail */}
+  {webinar.thumbnail && (
+    <img
+      src={webinar.thumbnail}
+      alt={webinar.title}
+      className="w-full h-40 object-cover card-img-top"
+    />
+  )}
 
-                {/* Status */}
-                <span
-                  className={`text-sm font-medium mb-2 inline-block px-2 py-1 rounded ${
-                    getStatus(webinar.date) === "Upcoming"
-                      ? "bg-blue-100 text-blue-700"
-                      : getStatus(webinar.date) === "Today"
-                      ? "bg-green-100 text-green-700"
-                      : "bg-gray-200 text-gray-700"
-                  }`}
-                >
-                  {getStatus(webinar.date)}
-                </span>
+  <div className="card-body flex flex-col flex-grow p-5">
+    {/* Status (styled via CSS) */}
+    <div className="status">{getStatus(webinar.date)}</div>
 
-                {/* Packages */}
-                <div className="flex flex-wrap gap-2 mb-2">
-                  {webinar.packages && webinar.packages.length > 0 ? (
-                    webinar.packages.map((pkg) => (
-                      <span
-                        key={pkg.id}
-                        className="bg-gradient-to-r from-purple-400 to-indigo-500 text-white px-3 py-1 rounded-full text-xs font-semibold shadow-sm transform hover:scale-105 transition-all duration-200"
-                      >
-                        {pkg.name || pkg.title || `Package ${pkg.id}`}
-                      </span>
-                    ))
-                  ) : (
-                    <span className="text-gray-400 text-sm">📦 No packages</span>
-                  )}
-                </div>
+    {/* Title */}
+    <h5 className="text-xl font-semibold text-gray-800 mb-1">
+      {webinar.title}
+    </h5>
 
-                <p className="text-gray-600 text-sm mb-1">
-                  📅 {webinar.date} | ⏰ {webinar.time}
-                </p>
-                {/* Meeting Link */}
-                {webinar.meetingLink && (
-                  <a
-                    href={
-                      webinar.meetingLink.startsWith("http")
-                        ? webinar.meetingLink
-                        : `https://${webinar.meetingLink}`
-                    }
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:text-blue-800 text-sm font-medium mb-2 inline-block"
-                  >
-                    🔗 Join Meeting
-                  </a>
-                )}
-
-                {/* Resource Toggle Button */}
-                <button
-                  onClick={() => toggleResources(webinar.id)}
-                  className="mt-3 text-sm font-medium text-gray-800 hover:text-gray-900 flex items-center gap-1 transition"
-                >
-                  {expandedId === webinar.id ? (
-                    <>
-                      <ChevronUp size={16} /> Hide Resources
-                    </>
-                  ) : (
-                    <>
-                      <ChevronDown size={16} /> View Resources
-                    </>
-                  )}
-                </button>
-
-                {expandedId === webinar.id && (
-                  <div className="mt-3 bg-gray-50 rounded-lg p-3 border border-gray-200 max-h-40 overflow-y-auto">
-                    {webinar.resources && webinar.resources.length > 0 ? (
-webinar.resources.map((r) => {
-  const isYouTube =
-    r.resourceUrl.includes("youtube.com") ||
-    r.resourceUrl.includes("youtu.be");
-
-  // 👉 Files get BASE_URL, YouTube does NOT
-  const fileUrl = isYouTube
-    ? r.resourceUrl
-    : `${BASE_URL}${r.resourceUrl}`;
-
-  return (
-    <div key={r.id} className="py-1 border-b last:border-none">
-      {r.resourceUrl.match(/\.(jpg|jpeg|png|gif)$/i) ? (
-        <img
-          src={fileUrl}
-          alt={r.resourceName}
-          className="w-full rounded-lg mb-2"
-        />
+    {/* Packages */}
+    <div className="flex flex-wrap gap-2 mb-2">
+      {webinar.packages && webinar.packages.length > 0 ? (
+        webinar.packages.map((pkg) => (
+          <span key={pkg.id} className="badge package">
+            {pkg.name || pkg.title || `Package ${pkg.id}`}
+          </span>
+        ))
       ) : (
-        <a
-          href={fileUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-2 text-sm text-gray-700 hover:text-gray-900"
-        >
-          <File size={14} />
-          {r.resourceName}
-          <Link2 size={12} className="ml-auto opacity-60" />
-        </a>
+        <span className="text-gray-400 text-sm">📦 No packages</span>
       )}
     </div>
-  );
-})
 
-                    ) : (
-                      <p className="text-gray-400 text-sm text-center">
-                        No resources uploaded. Please manage the resources.
-                      </p>
-                    )}
-                  </div>
+    {/* Date & Time */}
+    <p className="text-gray-600 text-sm mb-1">
+      📅 {webinar.date} | ⏰ {webinar.time}
+    </p>
+
+    {/* Meeting Link */}
+    {webinar.meetingLink && (
+      <a
+        href={
+          webinar.meetingLink.startsWith("http")
+            ? webinar.meetingLink
+            : `https://${webinar.meetingLink}`
+        }
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-blue-600 hover:text-blue-800 text-sm font-medium mb-2 inline-block"
+      >
+        🔗 Join Meeting
+      </a>
+    )}
+
+    {/* Resource Toggle */}
+    <button
+      onClick={() => toggleResources(webinar.id)}
+      className="mt-3 text-sm font-medium text-gray-800 hover:text-gray-900 flex items-center gap-1 transition"
+    >
+      {expandedId === webinar.id ? (
+        <>
+          <ChevronUp size={16} /> Hide Resources
+        </>
+      ) : (
+        <>
+          <ChevronDown size={16} /> View Resources
+        </>
+      )}
+    </button>
+
+    {/* Resources */}
+    {expandedId === webinar.id && (
+      <div className="mt-3 bg-gray-50 rounded-lg p-3 border border-gray-200 max-h-40 overflow-y-auto">
+        {webinar.resources && webinar.resources.length > 0 ? (
+          webinar.resources.map((r) => {
+            const isYouTube =
+              r.resourceUrl.includes("youtube.com") ||
+              r.resourceUrl.includes("youtu.be");
+
+            const fileUrl = isYouTube ? r.resourceUrl : `${BASE_URL}${r.resourceUrl}`;
+
+            return (
+              <div key={r.id} className="py-1 border-b last:border-none">
+                {r.resourceUrl.match(/\.(jpg|jpeg|png|gif)$/i) ? (
+                  <img
+                    src={fileUrl}
+                    alt={r.resourceName}
+                    className="w-full rounded-lg mb-2"
+                  />
+                ) : (
+                  <a
+                    href={fileUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 text-sm text-gray-700 hover:text-gray-900"
+                  >
+                    <File size={14} />
+                    {r.resourceName}
+                    <Link2 size={12} className="ml-auto opacity-60" />
+                  </a>
                 )}
-
-                {/* Action Buttons */}
-                <div className="mt-4 grid grid-cols-2 gap-2">
-                  <button
-                    onClick={() =>
-                      router.push(`/dashboard/webinars/edit/${webinar.id}`)
-                    }
-                    className="px-3 py-2 bg-gray-200 text-gray-800 rounded-lg text-sm font-medium hover:bg-gray-300 transition"
-                  >
-                     Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(webinar.id)}
-                    className="px-3 py-2 bg-gray-200 text-gray-800 rounded-lg text-sm font-medium hover:bg-gray-300 transition"
-                  >
-                     Delete
-                  </button>
-                </div>
-
-                {/* Manage Resource Button */}
-                <div className="mt-3">
-                  <button
-                    onClick={() =>
-                      router.push(
-                        `/dashboard/webinars/upload-resource?webinarId=${webinar.id}`
-                      )
-                    }
-                    className="w-full px-3 py-2 bg-gray-800 text-white rounded-lg text-sm font-medium hover:bg-gray-900 transition"
-                  >
-                     Manage Resources
-                  </button>
-                </div>
               </div>
-            </div>
+            );
+          })
+        ) : (
+          <p className="text-gray-400 text-sm text-center">
+            No resources uploaded. Please manage the resources.
+          </p>
+        )}
+      </div>
+    )}
+
+    {/* Action Buttons */}
+    <div className="mt-4 grid grid-cols-2 gap-2">
+      <button
+        onClick={() => router.push(`/dashboard/webinars/edit/${webinar.id}`)}
+        className="px-3 py-2 bg-gray-200 text-gray-800 rounded-lg text-sm font-medium hover:bg-gray-300 transition"
+      >
+        Edit
+      </button>
+      <button
+        onClick={() => handleDelete(webinar.id)}
+        className="px-3 py-2 bg-gray-200 text-gray-800 rounded-lg text-sm font-medium hover:bg-gray-300 transition"
+      >
+        Delete
+      </button>
+    </div>
+
+    {/* Manage Resource Button */}
+    <div className="mt-3">
+      <button
+        onClick={() =>
+          router.push(`/dashboard/webinars/upload-resource?webinarId=${webinar.id}`)
+        }
+        className="w-full px-3 py-2 bg-gray-800 text-white rounded-lg text-sm font-medium hover:bg-gray-900 transition"
+      >
+        Manage Resources
+      </button>
+    </div>
+  </div>
+</div>
+
           ))}
         </div>
       )}
