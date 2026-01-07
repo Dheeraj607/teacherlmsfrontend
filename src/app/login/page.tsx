@@ -183,9 +183,9 @@ export default function LoginPage() {
 </div>
 
 
-                <div className="countinuediv text-center mb-3">
+                {/* <div className="countinuediv text-center mb-3">
                   <p><span style={{ background: "#fff", padding: "5px 10px" }}>Continue with</span></p>
-                </div>
+                </div> */}
 
                   {/* <div className="col mb-4 d-grid gap-2">
   <button
