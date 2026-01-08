@@ -160,7 +160,7 @@ const fetchWebinars = async () => {
     </p>
 
     {/* Meeting Link */}
-    {webinar.meetingLink && (
+    {/* {webinar.meetingLink && (
       <a
         href={
           webinar.meetingLink.startsWith("http")
@@ -173,7 +173,7 @@ const fetchWebinars = async () => {
       >
         🔗 Join Meeting
       </a>
-    )}
+    )} */}
 
     {/* Resource Toggle */}
     <button
@@ -249,17 +249,35 @@ const fetchWebinars = async () => {
       </button>
     </div>
 
-    {/* Manage Resource Button */}
-    <div className="mt-3">
-      <button
-        onClick={() =>
-          router.push(`/dashboard/webinars/upload-resource?webinarId=${webinar.id}`)
-        }
-        className="w-full px-3 py-2 bg-gray-800 text-white rounded-lg text-sm font-medium hover:bg-gray-900 transition"
-      >
-        Manage Resources
-      </button>
-    </div>
+   {/* Manage Resource & Join Webinar Buttons */}
+<div className="mt-3 grid grid-cols-2 gap-2">
+  {/* Resources Button */}
+  <button
+    onClick={() =>
+      router.push(`/dashboard/webinars/upload-resource?webinarId=${webinar.id}`)
+    }
+    className="w-full px-3 py-2 bg-gray-800 text-white rounded-lg text-sm font-medium hover:bg-gray-900 transition"
+  >
+    Resources
+  </button>
+
+  {/* Join Webinar Button */}
+  {webinar.meetingLink && (
+    <button
+      onClick={() =>
+        window.open(
+          webinar.meetingLink!.startsWith("http")
+            ? webinar.meetingLink
+            : `https://${webinar.meetingLink}`,
+          "_blank"
+        )
+      }
+      className="w-full px-3 py-2 bg-gray-800 text-white rounded-lg text-sm font-medium hover:bg-gray-900 transition"
+    >
+      Join 
+    </button>
+  )}
+</div>
   </div>
 </div>
 

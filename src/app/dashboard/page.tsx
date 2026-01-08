@@ -81,6 +81,7 @@ useEffect(() => {
 
   const { remaining, tokenReady } = useTokenManager();
   const { showWarning, countdown } = useIdleTimer();
+const [packageOpen, setPackageOpen] = useState(false);
 
   // useEffect(() => {
   //   startTokenRefreshTimer(); // auto-refresh access token
@@ -114,11 +115,17 @@ useEffect(() => {
       sevenDaysLater.setDate(today.getDate() + 7);
       sevenDaysLater.setHours(23, 59, 59, 999);
 
-      const filteredWebinars = allWebinars.filter((w) => {
-        if (!w?.date) return false;
-        const webinarDate = new Date(w.date);
-        return webinarDate >= today && webinarDate <= sevenDaysLater;
-      });
+const filteredWebinars = allWebinars
+  .filter((w) => {
+    if (!w?.date) return false;
+    const webinarDate = new Date(w.date);
+    return webinarDate >= today && webinarDate <= sevenDaysLater;
+  })
+  .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()) // soonest first
+  .slice(0, 3); // only 3 webinars
+
+setUpcomingWebinars(filteredWebinars);
+
 
       setUpcomingWebinars(filteredWebinars);
       setLatestStudents(studentsRes.data || []);
@@ -143,9 +150,8 @@ useEffect(() => {
       window.location.reload();
     }
   };
-
-  return (
-   <div className="p-8 overflow-auto font-sans">
+ return (
+    <div className="p-8 overflow-auto font-sans space-y-10">
       {/* Token & Idle warnings */}
       {tokenReady && (
         <div className="fixed top-2 right-2 p-2 bg-gray-200 rounded shadow">
@@ -158,131 +164,195 @@ useEffect(() => {
         </div>
       )}
 
-      <h2 className="text-2xl font-semibold mb-4">Dashboard </h2>
+      {/* Dashboard Heading */}
+      <h2 className="text-2xl font-semibold mb-4">Dashboard</h2>
 
-
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Upcoming Webinars */}
-        <div className="bg-white p-5 shadow rounded-lg hover:shadow-lg transition duration-200">
-          <h4 className="text-lg font-semibold mb-4">Upcoming Webinars</h4>
-          {upcomingWebinars.length > 0 ? (
-            <ul className="space-y-2 text-sm text-gray-700">
-              {upcomingWebinars.map((w) => (
-                <li key={w.id} className="border-b pb-2 last:border-b-0">
-                  <p className="font-semibold">{w.title}</p>
-                  <p>Date: {new Date(w.date).toLocaleDateString()}</p>
-                  <p> Time: {w.time || "-"}</p>
+      {/* Upcoming Webinars */}
+      <div className="mb-10">
+        <h4 className="text-lg font-semibold mb-4">Upcoming Webinars</h4>
+        {upcomingWebinars.length === 0 ? (
+          <p className="text-gray-500 text-sm">No webinars scheduled.</p>
+        ) : (
+          <div className="flex flex-wrap -mx-3">
+            {upcomingWebinars.slice(0, 3).map((w) => (
+              <div key={w.id} className="w-full sm:w-1/3 px-3 mb-6 flex">
+                <div className="flex-1 flex flex-col h-full bg-white rounded-2xl shadow-md border overflow-hidden p-4">
+                  <h5 className="font-semibold text-gray-800 mb-2">{w.title}</h5>
+                  <div className="flex gap-2 text-gray-700 text-sm mb-2">
+                    <div className="flex items-center gap-1">
+                      <span>📅</span>
+                      <span>{new Date(w.date).toLocaleDateString()}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span>⏰</span>
+                      <span>{w.time || "-"}</span>
+                    </div>
+                  </div>
                   {w.isRecurring && w.recurringType && (
-                    <p className="text-gray-500 italic">Recurring: {w.recurringType}</p>
+                    <p className="text-gray-500 italic text-sm mb-2">
+                      Recurring: {w.recurringType}
+                    </p>
                   )}
-                  {w.meetingLink && (
+                  {w.meetingLink ? (
                     <a
                       href={w.meetingLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-600 underline"
+                      className="mt-auto btn btn-primary w-full text-center"
                     >
-                       Join Link
+                      Join Meeting
                     </a>
+                  ) : (
+                    <button
+                      className="mt-auto btn btn-secondary w-full text-center"
+                      disabled
+                    >
+                      No Link
+                    </button>
                   )}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="mb-4">No webinars scheduled.</p>
-          )}
-        </div>
-
-        {/* Latest Students */}
-        <div className="bg-white p-5 shadow rounded-lg hover:shadow-lg transition duration-200">
-          <h4 className=" mb-4">Latest Students</h4>
-          {latestStudents.length > 0 ? (
-            <ul className="space-y-1 text-sm text-gray-700">
-              {latestStudents.map((s) => (
-                <li key={s.id}>
-                  👤 {s.firstName} {s.lastName} — <span className="italic">{s.domain}</span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="mb-4">No students registered yet.</p>
-          )}
-        </div>
-
-        {/* Latest Package */}
-        <div className="bg-white shadow-lg rounded-2xl overflow-hidden hover:shadow-xl transition flex flex-col">
-          {latestPackage ? (
-            <>
-              <div className="relative w-full h-100 bg-gray-100">
-                <img
-                  src={latestPackage.coverImage || "/placeholder.png"}
-                  alt={latestPackage.name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="p-5 flex flex-col flex-grow">
-                <h3 className="text-xl font-semibold text-gray-800 mb-1">{latestPackage.name}</h3>
-                <div
-  className="text-gray-600 text-sm mb-3 line-clamp-3"
-  dangerouslySetInnerHTML={{ __html: latestPackage.description || "" }}
-></div>
-
-                <p className="text-lg font-bold text-gray-800 mb-4">
-                  {latestPackage.paymentSettings?.currency || "₹"} {latestPackage.paymentSettings?.price || 0}
-                </p>
-                <div className="mt-auto grid grid-cols-2 gap-2">
-                  <button
-                    onClick={() => router.push(`/dashboard/packages/edit/${latestPackage.id}`)}
-                    className="px-3 py-2 bg-gray-200 text-gray-800 rounded-lg text-sm font-medium hover:bg-gray-300 transition"
-                  >
-                     Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(latestPackage.id)}
-                    className="px-3 py-2 bg-gray-200 text-gray-800 rounded-lg text-sm font-medium hover:bg-gray-300 transition"
-                  >
-                     Delete
-                  </button>
-                  <button
-                    onClick={() => router.push(`/dashboard/package-settings/${latestPackage.id}`)}
-                    className="px-3 py-2 bg-gray-200 text-gray-800 rounded-lg text-sm font-medium hover:bg-gray-300 transition"
-                  >
-                     Settings
-                  </button>
-                  <button
-                    onClick={() => router.push(`/dashboard/package-payment-settings/${latestPackage.id}`)}
-                    className="px-3 py-2 bg-gray-200 text-gray-800 rounded-lg text-sm font-medium hover:bg-gray-300 transition"
-                  >
-                     Payment
-                  </button>
                 </div>
               </div>
-            </>
-          ) : (
-            <p className="p-5 mb-4">No package created yet.</p>
-          )}
-        </div>
+            ))}
+          </div>
+        )}
+      </div>
 
-        {/* Earnings */}
-        <div className="bg-white p-5 shadow rounded-lg hover:shadow-lg transition duration-200">
-          <h4 className=" mb-4">Earnings</h4>
-          <div className="text-gray-700 text-sm space-y-1">
-            <p>
-              📆 {earnings.currentMonthName} :
-              <span className="font-bold text-green-600"> ₹{earnings.currentMonth}</span>
-            </p>
-            <p>
-              📅 {earnings.previousMonthName} :
-              <span className="font-bold text-blue-600"> ₹{earnings.previousMonth}</span>
-            </p>
-            <p>
-              👥 Total Students :
-              <span className="font-bold text-purple-600"> {earnings.totalStudents}</span>
-            </p>
+      {/* Latest Package */}
+      <div className="flex flex-wrap -mx-3 ">
+        <div className="w-full md:w-1/3 px-3">
+          <div className="card relative border rounded-lg shadow-md flex flex-col overflow-hidden h-full">
+            {latestPackage ? (
+              <>
+                <div className="w-full h-40 overflow-hidden rounded-t-lg bg-gray-100">
+                  <img
+                    src={latestPackage.coverImage || "/placeholder.png"}
+                    alt={latestPackage.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="card-body p-4 flex flex-col flex-1">
+                  <h5 className="card-title font-semibold text-gray-800 mb-2">
+                    {latestPackage.name}
+                  </h5>
+
+                  {/* Accordion */}
+                  <div className="border-t border-gray-200 mt-2">
+                    <button
+                      className="flex items-center justify-between w-full px-0 py-1 text-sm font-medium text-gray-700 hover:underline"
+                      onClick={() => setPackageOpen(!packageOpen)}
+                    >
+                      <span>{packageOpen ? "Hide Details" : "View Details"}</span>
+                      <svg
+                        className={`w-4 h-4 ml-2 transition-transform duration-300 ${
+                          packageOpen ? "rotate-180" : "rotate-0"
+                        }`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M19 9l-7 7-7-7"
+                        ></path>
+                      </svg>
+                    </button>
+                    {packageOpen && (
+                      <div
+                        className="mt-1 text-gray-600 text-sm line-clamp-4"
+                        dangerouslySetInnerHTML={{ __html: latestPackage.description || "" }}
+                      ></div>
+                    )}
+                  </div>
+
+                  {/* Price */}
+                  <p className="text-lg font-bold text-gray-800 mt-3 mb-4">
+                    {latestPackage.paymentSettings?.currency || "₹"} {latestPackage.paymentSettings?.price || 0}
+                  </p>
+
+                  {/* Action Buttons */}
+                  <div className="mt-auto grid grid-cols-2 gap-2">
+                    <button
+                      onClick={() => router.push(`/dashboard/packages/edit/${latestPackage.id}`)}
+                      className="px-3 py-2 bg-gray-200 text-gray-800 rounded-lg text-sm font-medium hover:bg-gray-300 transition"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(latestPackage.id)}
+                      className="px-3 py-2 bg-gray-200 text-gray-800 rounded-lg text-sm font-medium hover:bg-gray-300 transition"
+                    >
+                      Delete
+                    </button>
+                    <button
+                      onClick={() => router.push(`/dashboard/package-settings/${latestPackage.id}`)}
+                      className="px-3 py-2 bg-gray-200 text-gray-800 rounded-lg text-sm font-medium hover:bg-gray-300 transition"
+                    >
+                      Settings
+                    </button>
+                    <button
+                      onClick={() => router.push(`/dashboard/package-payment-settings/${latestPackage.id}`)}
+                      className="px-3 py-2 bg-gray-200 text-gray-800 rounded-lg text-sm font-medium hover:bg-gray-300 transition"
+                    >
+                      Payment
+                    </button>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <p className="p-5 text-gray-500">No package created yet.</p>
+            )}
           </div>
         </div>
-      </div>
+{/* Latest Students */}
+<div className="w-full md:w-1/3 px-4">
+  <div className="bg-white pt-4 px-3 pb-3 shadow rounded-lg hover:shadow-lg transition duration-200 h-full flex flex-col">
+    <h4 className="mb-3 text-lg font-semibold text-gray-800">Latest Students</h4>
+
+    {latestStudents.length > 0 ? (
+      <ul className="space-y-1.5 flex-1 overflow-auto">
+        {latestStudents.map((s) => (
+          <li
+            key={s.id}
+            className="p-1.5 bg-gray-100 rounded-lg flex justify-between text-sm"
+          >
+            <span className="truncate">👤 {s.firstName} {s.lastName}</span>
+            <span className="italic text-gray-500 truncate">{s.domain || "-"}</span>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p className="text-gray-500 text-sm">No students registered yet.</p>
+    )}
+  </div>
+</div>
+
+
+{/* Earnings */}
+<div className="w-full md:w-1/3 px-3">
+  <div className="bg-white p-4 shadow rounded-lg hover:shadow-lg transition duration-200 h-full flex flex-col">
+    {/* Header at the top with smaller margin */}
+    <h4 className="mb-1 text-lg font-semibold text-gray-800">Earnings</h4>
+
+    {/* Data below header with small gap */}
+    <div className="text-gray-700 text-sm space-y-1 mt-2">
+      <p className="flex justify-between">
+        <span>📆 {earnings.currentMonthName}</span>
+        <span className="font-bold text-green-600">₹{earnings.currentMonth}</span>
+      </p>
+      <p className="flex justify-between">
+        <span>📅 {earnings.previousMonthName}</span>
+        <span className="font-bold text-blue-600">₹{earnings.previousMonth}</span>
+      </p>
+      <p className="flex justify-between">
+        <span>👥 Total Students</span>
+        <span className="font-bold text-purple-600">{earnings.totalStudents}</span>
+      </p>
+    </div>
+  </div>
+</div>
+    </div>
     </div>
   );
 }
