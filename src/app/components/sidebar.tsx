@@ -1,12 +1,109 @@
+// "use client";
+// import { LogOut } from "lucide-react";
+
+// function SidebarLogout({ onLogout }: { onLogout: () => void }) {
+//   return (
+//     <div className="mt-auto p-3 border-top">
+//       <button
+//         onClick={onLogout}
+//         className="w-100 d-flex align-items-center gap-2 px-3 py-2 rounded fw-semibold text-danger"
+//       >
+//         <LogOut size={18} />
+//         Logout
+//       </button>
+//     </div>
+//   );
+// }
+
+
+
+// import { useRouter } from "next/navigation";
+// import { useState } from "react";
+
+// export default function Sidebar() {
+//   const router = useRouter();
+//   const [active, setActive] = useState("Dashboard");
+
+//   const handleNavigate = (label: string, path: string) => {
+//     setActive(label);
+//     router.push(path);
+//   };
+
+//   const handleLogout = () => {
+//     localStorage.removeItem("accessToken");
+//     localStorage.removeItem("refreshToken");
+//     localStorage.removeItem("student");
+//     localStorage.removeItem("studentId");
+//     localStorage.removeItem("domainData");
+
+//     router.push("/login");
+//   };
+
+//   return (
+//     <div className="sidebar d-flex flex-column bg-blue-900 text-white">
+//       {/* Dynamic Title */}
+//       <h4 className="p-3 border-bottom">{active}</h4>
+
+//       {/* Sidebar Items */}
+//       <a
+//         className={active === "Dashboard" ? "active" : ""}
+//         onClick={() => handleNavigate("Dashboard", "/dashboard")}
+//       >
+//         Dashboard
+//       </a>
+
+//       <a
+//         className={active === "Packages" ? "active" : ""}
+//         onClick={() => handleNavigate("Packages", "/dashboard/packages")}
+//       >
+//         Packages
+//       </a>
+
+//       <a
+//         className={active === "Courses" ? "active" : ""}
+//         onClick={() => handleNavigate("Courses", "/dashboard/courses")}
+//       >
+//         Courses
+//       </a>
+
+//       <a
+//         className={active === "Webinars" ? "active" : ""}
+//         onClick={() => handleNavigate("Webinars", "/dashboard/webinars")}
+//       >
+//         Webinars
+//       </a>
+
+//       <a
+//         className={active === "Registered Students" ? "active" : ""}
+//         onClick={() =>
+//           handleNavigate(
+//             "Registered Students",
+//             "/dashboard/registered-students"
+//           )
+//         }
+//       >
+//         Registered Students
+//       </a>
+
+//      <SidebarLogout onLogout={handleLogout} />
+
+//     </div>
+//   );
+// }
+
+
 "use client";
+
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { LogOut } from "lucide-react";
 
 function SidebarLogout({ onLogout }: { onLogout: () => void }) {
   return (
-    <div className="mt-auto p-3 border-top">
+    <div className="mt-auto p-3 border-t border-blue-800">
       <button
         onClick={onLogout}
-        className="w-100 d-flex align-items-center gap-2 px-3 py-2 rounded fw-semibold text-danger"
+        className="w-full flex items-center gap-2 px-3 py-2 rounded font-semibold text-red-500 hover:bg-red-600 hover:text-white transition"
       >
         <LogOut size={18} />
         Logout
@@ -15,12 +112,7 @@ function SidebarLogout({ onLogout }: { onLogout: () => void }) {
   );
 }
 
-
-
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-
-export default function Sidebar() {
+export default function Sidebar({ sidebarOpen = true }: { sidebarOpen?: boolean }) {
   const router = useRouter();
   const [active, setActive] = useState("Dashboard");
 
@@ -40,90 +132,71 @@ export default function Sidebar() {
   };
 
   return (
-    <div className="sidebar d-flex flex-column">
+    <div
+      className={`fixed md:relative top-0 left-0 z-50 flex flex-col bg-blue-900 text-white h-screen transition-transform duration-300 min-w-[230px] font-sans ${
+        sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+      }`}
+    >
       {/* Dynamic Title */}
-      <h4 className="p-3 border-bottom">{active}</h4>
+      <h4 className="p-3 border-b border-blue-800 text-lg font-semibold">
+        {active}
+      </h4>
 
       {/* Sidebar Items */}
-      <a
-        className={active === "Dashboard" ? "active" : ""}
-        onClick={() => handleNavigate("Dashboard", "/dashboard")}
-      >
-        Dashboard
-      </a>
+      <nav className="flex flex-col flex-grow p-2 space-y-1">
+        <button
+          className={`text-left px-3 py-2 rounded-md hover:bg-blue-800 transition ${
+            active === "Dashboard" ? "bg-blue-800 font-medium" : ""
+          }`}
+          onClick={() => handleNavigate("Dashboard", "/dashboard")}
+        >
+          Dashboard
+        </button>
 
-      <a
-        className={active === "Packages" ? "active" : ""}
-        onClick={() => handleNavigate("Packages", "/dashboard/packages")}
-      >
-        Packages
-      </a>
+        <button
+          className={`text-left px-3 py-2 rounded-md hover:bg-blue-800 transition ${
+            active === "Packages" ? "bg-blue-800 font-medium" : ""
+          }`}
+          onClick={() => handleNavigate("Packages", "/dashboard/packages")}
+        >
+          Packages
+        </button>
 
-      <a
-        className={active === "Courses" ? "active" : ""}
-        onClick={() => handleNavigate("Courses", "/dashboard/courses")}
-      >
-        Courses
-      </a>
+        <button
+          className={`text-left px-3 py-2 rounded-md hover:bg-blue-800 transition ${
+            active === "Courses" ? "bg-blue-800 font-medium" : ""
+          }`}
+          onClick={() => handleNavigate("Courses", "/dashboard/courses")}
+        >
+          Courses
+        </button>
 
-      <a
-        className={active === "Webinars" ? "active" : ""}
-        onClick={() => handleNavigate("Webinars", "/dashboard/webinars")}
-      >
-        Webinars
-      </a>
+        <button
+          className={`text-left px-3 py-2 rounded-md hover:bg-blue-800 transition ${
+            active === "Webinars" ? "bg-blue-800 font-medium" : ""
+          }`}
+          onClick={() => handleNavigate("Webinars", "/dashboard/webinars")}
+        >
+          Webinars
+        </button>
 
-      <a
-        className={active === "Registered Students" ? "active" : ""}
-        onClick={() =>
-          handleNavigate(
-            "Registered Students",
-            "/dashboard/registered-students"
-          )
-        }
-      >
-        Registered Students
-      </a>
+        <button
+          className={`text-left px-3 py-2 rounded-md hover:bg-blue-800 transition ${
+            active === "Registered Students" ? "bg-blue-800 font-medium" : ""
+          }`}
+          onClick={() =>
+            handleNavigate(
+              "Registered Students",
+              "/dashboard/registered-students"
+            )
+          }
+        >
+          Registered Students
+        </button>
 
-     <SidebarLogout onLogout={handleLogout} />
-
+        {/* Logout at the bottom */}
+        <SidebarLogout onLogout={handleLogout} />
+      </nav>
     </div>
   );
 }
-
-
-
-
-// "use client";
-// import { useRouter } from "next/navigation";
-
-// export default function Sidebar() {
-//   const router = useRouter();
-
-//   const handleLogout = () => {
-//     // Clear all relevant localStorage items
-//     localStorage.removeItem("accessToken");
-//     localStorage.removeItem("refreshToken");
-//     localStorage.removeItem("student");
-//     localStorage.removeItem("studentId");
-//     localStorage.removeItem("domainData");
-
-//     // Redirect to login
-//     router.push("/login");
-//   };
-
-//   return (
-//     <div className="sidebar d-flex flex-column">
-//       <h4 className="p-3 border-bottom">Dashboard</h4>
-
-//       <a onClick={() => router.push("/dashboard/packages")}>Packages</a>
-//       <a onClick={() => router.push("/dashboard/courses")}>Courses</a>
-//       <a onClick={() => router.push("/dashboard/webinars")}>Webinars</a>
-//       <a onClick={() => router.push("/dashboard/registered-students")}>Registered Students</a>
-
-//       <a onClick={handleLogout} className="mt-auto logout-btn">
-//         Logout
-//       </a>
-//     </div>
-//   );
-// }

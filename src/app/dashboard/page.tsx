@@ -235,41 +235,45 @@ setUpcomingWebinars(filteredWebinars);
                     {latestPackage.name}
                   </h5>
 
-                  {/* Accordion */}
-                  <div className="border-t border-gray-200 mt-2">
-                    <button
-                      className="flex items-center justify-between w-full px-0 py-1 text-sm font-medium text-gray-700 hover:underline"
-                      onClick={() => setPackageOpen(!packageOpen)}
-                    >
-                      <span>{packageOpen ? "Hide Details" : "View Details"}</span>
-                      <svg
-                        className={`w-4 h-4 ml-2 transition-transform duration-300 ${
-                          packageOpen ? "rotate-180" : "rotate-0"
-                        }`}
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M19 9l-7 7-7-7"
-                        ></path>
-                      </svg>
-                    </button>
-                    {packageOpen && (
-                      <div
-                        className="mt-1 text-gray-600 text-sm line-clamp-4"
-                        dangerouslySetInnerHTML={{ __html: latestPackage.description || "" }}
-                      ></div>
-                    )}
-                  </div>
+                 {/* Accordion + Price */}
+<div className="border-t border-gray-200 mt-2">
+  <button
+    className="flex items-center justify-between w-full px-0 py-1 text-sm font-medium text-gray-700 hover:underline"
+    onClick={() => setPackageOpen(!packageOpen)}
+  >
+    <span>{packageOpen ? "Hide Details" : "View Details"}</span>
+    <svg
+      className={`w-4 h-4 ml-2 transition-transform duration-300 ${
+        packageOpen ? "rotate-180" : "rotate-0"
+      }`}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        d="M19 9l-7 7-7-7"
+      ></path>
+    </svg>
+  </button>
 
-                  {/* Price */}
-                  <p className="text-lg font-bold text-gray-800 mt-3 mb-4">
-                    {latestPackage.paymentSettings?.currency || "₹"} {latestPackage.paymentSettings?.price || 0}
-                  </p>
+  {packageOpen && (
+    <div className="mt-2 text-gray-600 text-sm">
+      {/* Full Description */}
+      <div
+      dangerouslySetInnerHTML={{ __html: latestPackage.description || "" }}
+      className="mb-3 list-disc list-inside space-y-1"
+      ></div>
+
+      {/* Price */}
+      <p className="text-lg font-bold text-gray-800">
+        {latestPackage.paymentSettings?.currency || "₹"} {latestPackage.paymentSettings?.price || 0}
+      </p>
+    </div>
+  )}
+</div>
 
                   {/* Action Buttons */}
                   <div className="mt-auto grid grid-cols-2 gap-2">
