@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { LogOut } from "lucide-react";
+import { LogOut,User } from "lucide-react";
 
 function SidebarLogout({ onLogout }: { onLogout: () => void }) {
   return (
@@ -68,11 +68,20 @@ export default function Sidebar({ sidebarOpen = true }: { sidebarOpen?: boolean 
       </h4>
  {/* Display teacher info at the top */}
 {teacher && (
-  <div className="p-3 border-b border-blue-800">
-    <p className="font-medium text-white">{teacher.name}</p>
-    <p className="text-sm text-white">{teacher.email}</p>
+  <div className="p-3 border-b border-blue-800 flex items-center gap-3">
+    {/* Profile Icon */}
+    <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center">
+      <User className="w-5 h-5 text-blue-600" />
+    </div>
+
+    {/* Teacher Info */}
+    <div>
+      <p className="font-semibold text-white">{teacher.name}</p>
+      <p className="text-sm text-white">{teacher.email}</p>
+    </div>
   </div>
 )}
+
 
       {/* Sidebar Items */}
       <nav className="flex flex-col flex-grow p-2 space-y-1">
