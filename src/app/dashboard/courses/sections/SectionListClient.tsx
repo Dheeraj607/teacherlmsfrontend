@@ -93,7 +93,11 @@ export default function SectionListClient() {
               <li key={section.id} className="p-4 bg-white border border-purple-200 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 flex justify-between items-start">
                 <div className="flex-1 pr-4">
                   <h2 className="text-lg font-semibold text-purple-800">{section.title}</h2>
-                  <div className="text-purple-700 mb-2" dangerouslySetInnerHTML={{ __html: section.description || "No description available." }}></div>
+                <div
+  className="ck-content text-purple-700 mb-2 line-clamp-3"
+  dangerouslySetInnerHTML={{ __html: section.description || "No description available." }}
+></div>
+
                   <p className="text-sm text-purple-500">Order: {section.order_index}</p>
                 </div>
 

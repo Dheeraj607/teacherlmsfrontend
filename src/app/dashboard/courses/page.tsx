@@ -191,11 +191,16 @@
 
 
               {/* Description */}
-<p className="card-text line-clamp-3">
+{/* <p className="card-text line-clamp-3">
   {course.description
     ? course.description.replace(/<[^>]*>/g, "") // removes all HTML tags
     : "No description available."}
-</p>
+</p> */}
+<div
+  className="ck-content text-gray-700 text-sm line-clamp-3"
+  dangerouslySetInnerHTML={{ __html: course.description || "" }}
+/>
+
 
 
                 {/* Action Buttons */}

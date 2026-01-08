@@ -92,9 +92,10 @@ const fetchPackages = async () => {
 
         {/* Description */}
 <div
-  className="text-gray-700 text-sm mb-4 h-20 overflow-hidden line-clamp-3"
+  className="ck-content text-gray-700 text-sm mb-4 max-h-20 overflow-hidden"
   dangerouslySetInnerHTML={{ __html: pkg.description || "" }}
 />
+
 
 
 

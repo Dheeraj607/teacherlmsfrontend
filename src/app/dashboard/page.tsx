@@ -262,10 +262,11 @@ setUpcomingWebinars(filteredWebinars);
   {packageOpen && (
     <div className="mt-2 text-gray-600 text-sm">
       {/* Full Description */}
-      <div
-      dangerouslySetInnerHTML={{ __html: latestPackage.description || "" }}
-      className="mb-3 list-disc list-inside space-y-1"
-      ></div>
+   <div
+  className="ck-content mb-3 text-gray-600 text-sm"
+  dangerouslySetInnerHTML={{ __html: latestPackage.description || "" }}
+></div>
+
 
       {/* Price */}
       <p className="text-lg font-bold text-gray-800">
