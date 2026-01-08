@@ -109,6 +109,10 @@ export default function LoginPage() {
 
         localStorage.setItem("accessToken", data.accessToken);
         localStorage.setItem("refreshToken", data.refreshToken);
+  localStorage.setItem("teacherId", data.teacher.id.toString());
+  localStorage.setItem("teacherName", data.teacher.name);
+  localStorage.setItem("teacherEmail", data.teacher.email);
+        
         toast.success("Login successful!");
         router.push("/dashboard");
         return;
