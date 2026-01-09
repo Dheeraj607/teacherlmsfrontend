@@ -209,7 +209,19 @@ export default function LoginPage() {
     Login with Facebook
   </button>
 </div> */}
-
+  {/* Forgot Password Link */}
+                <div className="col mb-4 text-center">
+                  <a
+                    href="#"
+                    className="text-primary"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      router.push("/forgot-password");
+                    }}
+                  >
+                    Forgot Password?
+                  </a>
+                </div>
 
                 <div className="col mb-4 text-center">
                   <p>Don't have an account? <a href="/registerlogin">Register</a></p>
