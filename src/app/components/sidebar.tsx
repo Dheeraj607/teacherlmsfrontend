@@ -51,7 +51,9 @@ export default function Sidebar({ sidebarOpen = true }: { sidebarOpen?: boolean 
     localStorage.removeItem("pendingEmail");
     localStorage.removeItem("pendingPhone");
 
-    router.push("/login");
+    router.push("/logout-success");
+
+    
   };
 
   return (

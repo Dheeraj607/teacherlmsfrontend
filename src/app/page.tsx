@@ -51,6 +51,17 @@ export default function PackageListPage() {
 
   const formatDate = (date?: string) => (date ? new Date(date).toLocaleDateString() : "-");
 
+
+useEffect(() => {
+  window.history.pushState(null, "", window.location.href);
+  window.history.pushState(null, "", window.location.href);
+  window.onpopstate = function () {
+    window.history.go(1); // Prevent going back
+  };
+}, []);
+
+
+  
   useEffect(() => {
     console.log("API_URL =", API_URL);
 
