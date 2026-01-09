@@ -167,12 +167,12 @@ export default function VerifyEmailPage() {
           </button>
         </div>
 
-        <button
+        {/* <button
           onClick={handleOk}
           className="bg-green-600 text-white px-4 py-2 rounded-md w-full font-semibold hover:bg-green-700 transition"
         >
           OK
-        </button>
+        </button> */}
 
         {message && <p className="text-sm text-gray-700 mt-4">{message}</p>}
       </div>
