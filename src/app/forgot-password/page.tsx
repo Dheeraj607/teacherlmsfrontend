@@ -1,35 +1,29 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import api from "@/utils/axiosInstance";
+import { useState } from "react";
+
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function ForgotPasswordPage() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [sent, setSent] = useState(false);
 
-  const handleUpdate = async () => {
-    if (!email || !newPassword) {
-      toast.error("Email and new password are required");
+  const handleSend = async () => {
+    if (!email) {
+      toast.error("Email is required");
       return;
     }
 
     setLoading(true);
     try {
-      const res = await api.post("/auth/reset-password", {
-        email,
-        currentPassword: currentPassword || undefined,
-        newPassword,
-      });
+      const res = await api.post("/auth/forgot-password", { email });
       toast.success(res.data.message);
-      router.push("/login"); // redirect to login
+      setSent(true);
     } catch (err: any) {
-      toast.error(err.response?.data?.message || "Failed to reset password");
+      toast.error(err.response?.data?.message || "Failed to send email");
     } finally {
       setLoading(false);
     }
@@ -37,47 +31,35 @@ export default function ForgotPasswordPage() {
 
   return (
     <section className="container mt-5">
-      <ToastContainer position="top-center" autoClose={3000} />
+      <ToastContainer />
       <div className="col-md-4 offset-md-4">
-        <h3 className="mb-4">Reset Password</h3>
 
-        <div className="mb-3">
-          <label>Email</label>
-          <input
-            type="email"
-            className="form-control"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
+        <h4 className="mb-3">Forgot Password</h4>
 
-        <div className="mb-3">
-          <label>Current Password (optional)</label>
-          <input
-            type="password"
-            className="form-control"
-            value={currentPassword}
-            onChange={(e) => setCurrentPassword(e.target.value)}
-          />
-        </div>
+        {sent ? (
+          <p className="text-success">
+            ✅ Reset link sent. Check your email.
+          </p>
+        ) : (
+          <>
+            <input
+              type="email"
+              className="form-control mb-3"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
 
-        <div className="mb-3">
-          <label>New Password</label>
-          <input
-            type="password"
-            className="form-control"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-          />
-        </div>
+            <button
+              className="btn btn-primary w-100"
+              onClick={handleSend}
+              disabled={loading}
+            >
+              {loading ? "Sending..." : "Send Reset Link"}
+            </button>
+          </>
+        )}
 
-        <button
-          className="btn btn-primary w-100"
-          disabled={loading}
-          onClick={handleUpdate}
-        >
-          {loading ? "Updating..." : "Update Password"}
-        </button>
       </div>
     </section>
   );
