@@ -98,22 +98,21 @@ const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL, // CloudFront URL
 });
 
-// 🔒 Request interceptor: attach access token
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("accessToken");
-    if (token) config.headers["Authorization"] = `Bearer ${token}`;
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
-
-// 🔁 Response interceptor: handle 401 & refresh token
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
+    const url = originalRequest?.url || "";
 
+    // 🚫 DO NOT intercept auth routes
+    if (
+      error.response?.status === 401 &&
+      (url.includes("/auth/login") || url.includes("/auth/refresh"))
+    ) {
+      return Promise.reject(error); // ✅ let LoginPage handle it
+    }
+
+    // 🔁 Token refresh logic (for protected APIs)
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
@@ -131,17 +130,24 @@ api.interceptors.response.use(
       try {
         const refreshToken = localStorage.getItem("refreshToken");
         const res = await api.post("/auth/refresh", { refreshToken });
+
         const newAccessToken = res.data.accessToken;
         const newRefreshToken = res.data.refreshToken;
 
         localStorage.setItem("accessToken", newAccessToken);
         localStorage.setItem("refreshToken", newRefreshToken);
-        api.defaults.headers.common["Authorization"] = `Bearer ${newAccessToken}`;
+
+        api.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${newAccessToken}`;
 
         processQueue(null, newAccessToken);
         isRefreshing = false;
 
-        originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
+        originalRequest.headers[
+          "Authorization"
+        ] = `Bearer ${newAccessToken}`;
+
         return api(originalRequest);
       } catch (err) {
         processQueue(err, null);
@@ -155,5 +161,6 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
 
 export default api;

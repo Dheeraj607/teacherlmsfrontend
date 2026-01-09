@@ -108,8 +108,19 @@
 
     return (
   <div className="font-sans p-6">
+    <button
+  className="btn btn-primary float-end mt-n5 mb-3 me-0"
+  onClick={() => router.push("/dashboard/courses/create")}
+>
+  + Add Course
+</button>
     {/* Header */}
-    <h3 className="mb-4">Table Overview</h3>
+    <h3 className="mb-5">Table Overview</h3>
+
+
+
+
+
 
     {/* Grid */}
     <div className="row gx-5">

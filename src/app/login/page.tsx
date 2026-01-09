@@ -121,7 +121,7 @@ export default function LoginPage() {
       // Catch other statuses
       toast.error(data.message || "Login failed. Please check your credentials.");
     } catch (err: any) {
-      console.error(err);
+      // console.error(err);
       // If backend returns 401 or similar
       if (err.response?.status === 401) {
         toast.error("Invalid email or password!");

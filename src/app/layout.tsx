@@ -38,6 +38,8 @@
 //   );
 // }
 
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -88,6 +90,8 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} antialiased`}
       >
         {children}
+            {/* ✅ Global Toast Container */}
+        <ToastContainer position="top-center" autoClose={3000} />
       </body>
     </html>
   );
