@@ -36,6 +36,7 @@ const chapterTitle = searchParams.get("chapterTitle") || "";
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const BACKEND_URL = "https://d1ojm6zdv3m37g.cloudfront.net";
+  
 
   const [resourceForm, setResourceForm] = useState<ResourceForm>({
     resourceType: "",
@@ -66,7 +67,7 @@ const chapterTitle = searchParams.get("chapterTitle") || "";
       } catch (err: any) {
         console.error("Error fetching resource types:", err);
         setError("Failed to load resource types. Using default types.");
-        setResourceTypes(["thumbnail", "ppt", "youtubelink", "pdf", "word", "audio", "video"]);
+        setResourceTypes(["thumbnail", "ppt", "youtubelink", "pdf", "word", "audio", "video","excel"]);
       }
     };
 
@@ -385,13 +386,24 @@ const handleMove = async (id: number, direction: "up" | "down") => {
               <label htmlFor="file" className="block text-lg font-semibold text-gray-700 mb-2">
                 Upload File <span className="text-red-500">*</span>
               </label>
-              <input
+              {/* <input
                 type="file"
                 id="file"
                 ref={fileInputRef}
                 onChange={handleFileChange}
                 key={resourceForm.resourceType} // important to reset input when type changes
-                required={resourceForm.resourceType !== "youtubelink"}
+                required={resourceForm.resourceType !== "youtubelink"} */}
+                <input
+  type="file"
+  id="file"
+  ref={fileInputRef}
+  onChange={handleFileChange}
+  accept={
+    resourceForm.resourceType === "excel"
+      ? ".xls,.xlsx"
+      : undefined
+  }
+  required={resourceForm.resourceType !== "youtubelink"}
                 className="w-full p-3 border border-gray-300 rounded-lg shadow-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition-all"
               />
             </div>
