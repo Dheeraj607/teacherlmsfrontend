@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import axios from '@/app/lib/axios';
+import TextEditor from '@/app/components/TextEditor';
 
 export default function ChapterCreatePage() {
   const router = useRouter();
@@ -38,9 +39,10 @@ export default function ChapterCreatePage() {
       alert('✅ Chapter created successfully!');
 
       // Redirect to resource upload page
-      router.push(
-        `/dashboard/courses/sections/${sectionId}/chapters/${res.data.id}/upload-resource`
-      );
+   router.push(
+  `/dashboard/courses/sections/${sectionId}/chapters/${res.data.id}/upload-resource?chapterTitle=${encodeURIComponent(title)}`
+);
+
     } catch (err) {
       console.error('❌ Error creating chapter:', err);
       alert('Failed to create chapter');
@@ -57,7 +59,7 @@ export default function ChapterCreatePage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="form-label text-white">Title</label>
+            <label className="form-label text-black">Title</label>
             <input
               type="text"
               value={title}
@@ -68,19 +70,21 @@ export default function ChapterCreatePage() {
             />
           </div>
 
-          <div>
-            <label className="form-label text-white">Description</label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Enter description"
-              required
-              className="w-full p-2 border rounded h-32"
-            />
+            {/* Description using TextEditor */}
+          <div className="mb-4">
+            <label className="form-label text-black">Description</label>
+            <div className="form-control p-0" style={{ minHeight: '150px' }}>
+              <TextEditor
+                value={description}
+                onChange={(value: string) => setDescription(value)}
+                height="250px" // optional: adjust editor height
+              />
+            </div>
+            <small className="text-gray-500">Write a short description here…</small>
           </div>
 
           <div>
-            <label className="form-label text-white">Duration</label>
+            <label className="form-label text-black">Duration</label>
             <input
               type="text"
               value={duration}
@@ -91,7 +95,7 @@ export default function ChapterCreatePage() {
           </div>
 
           <div>
-            <label className="form-label text-white">Order Index</label>
+            <label className="form-label text-black">Order Index</label>
             <input
               type="number"
               value={orderIndex}

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import TextEditor from "@/app/components/TextEditor";
 
  const API_URL =
     process.env.NEXT_PUBLIC_API_URL ||
@@ -240,12 +241,28 @@ export default function EditCoursePage() {
             />
           </div>
 
-          <div>
-            <Label htmlFor="description">Course Description</Label>
-            <div className="mt-2">
-              <CKEditorInput value={description} onChange={setDescription} />
-            </div>
-          </div>
+         <div>
+  <Label htmlFor="description">Course Description <span className="text-red-500">*</span></Label>
+
+  {/* TextEditor with all features */}
+  <div className="form-control p-0 mt-2" style={{ height: "auto" }}>
+    <TextEditor
+      value={description}
+      onChange={(value: string) => setDescription(value)}
+    />
+  </div>
+
+  {/* Optional word count validation */}
+  <small className="text-muted block mt-1">
+    Description must be at least 200 words.
+    {description.trim().split(/\s+/).length < 200 && (
+      <span className="text-red-500 ml-2">
+        
+      </span>
+    )}
+  </small>
+</div>
+
 
           <div>
             <Label htmlFor="start-date">Start Date</Label>

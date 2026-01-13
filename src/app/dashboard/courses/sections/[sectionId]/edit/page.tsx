@@ -4,6 +4,7 @@ import { useRouter, useSearchParams, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import CKEditorInput from "@/app/components/CKEditorInput";
+import TextEditor from "@/app/components/TextEditor";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -95,7 +96,7 @@ export default function EditSectionPage() {
 
         <div className="mb-4">
           <label className="block text-purple-700 font-medium mb-2">Description</label>
-          <CKEditorInput value={description} onChange={setDescription} />
+          <TextEditor value={description} onChange={setDescription} />
         </div>
 
         <div className="mb-6">

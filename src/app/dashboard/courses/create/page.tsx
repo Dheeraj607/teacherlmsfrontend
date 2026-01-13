@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import CKEditorInput from "@/app/components/CKEditorInput";
 import axios from "axios";
+import TextEditor from "@/app/components/TextEditor";
 
  const API_URL =
     process.env.NEXT_PUBLIC_API_URL ||
@@ -99,8 +100,15 @@ const handleSaveAndNext = async () => {
     return;
   }
 
+  // ✅ Validation: required fields
   if (!title || !description) {
     alert("Please fill all required fields (title and description).");
+    return;
+  }
+
+  // ✅ Validation: at least one package selected
+  if (packageIds.length === 0) {
+    alert("Please select at least one package before creating the course.");
     return;
   }
 
@@ -113,15 +121,12 @@ const handleSaveAndNext = async () => {
     formData.append("startDate", startDate);
     formData.append("languageId", String(languageId || ""));
     formData.append("publish", String(publish));
-    formData.append("packageIds", JSON.stringify(packageIds));//change here 
-
-    // packageIds.forEach((id) => formData.append("packageIds", String(id)));
+    formData.append("packageIds", JSON.stringify(packageIds));
 
     if (thumbnailFile) {
-      formData.append("thumbnail", thumbnailFile); // ✅ must match backend interceptor name
+      formData.append("thumbnail", thumbnailFile);
     }
 
-    // ✅ FIXED: correct endpoint
     const res = await axios.post(`${API_URL}/courses`, formData, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -141,6 +146,7 @@ const handleSaveAndNext = async () => {
     );
   }
 };
+
 
 
 
@@ -239,32 +245,67 @@ const handleSaveAndNext = async () => {
             />
           </div>
 
-        <div className="col-12 mb-3">
+{/* Course Description */}
+<div className="col-12 mb-3">
   <label className="form-label">
     Course Description <span className="text-red-500">*</span>
   </label>
 
-  {/* CKEditor inside Bootstrap form-control wrapper */}
+  {/* TextEditor inside Bootstrap form-control wrapper */}
   <div className="form-control p-0" style={{ height: "auto" }}>
-    <CKEditorInput value={description} onChange={setDescription} />
+    <TextEditor
+      value={description}
+      onChange={(value: string) => setDescription(value)}
+    />
   </div>
 
-  <small className="text-muted">
+  {/* Word count validation */}
+  <small className="text-muted block mt-1">
     Description must be at least 200 words.
+    {description.trim().split(/\s+/).length < 200 && (
+      <span className="text-red-500 ml-2">
+        
+      </span>
+    )}
   </small>
 </div>
 
 
-          <div>
-            <Label htmlFor="start-date">Start Date</Label>
-            <Input
-              id="start-date"
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              className="mt-2"
-            />
-          </div>
+
+       {/* ✅ Publish Immediately Checkbox */}
+<div className="mb-4 flex items-center gap-3">
+  <Checkbox
+    id="publish"
+    checked={publish}
+    onCheckedChange={(val) => {
+      const checked = Boolean(val);
+      setPublish(checked);
+      if (checked) {
+        setStartDate(new Date().toISOString().slice(0, 10)); // set current date
+      } else {
+        setStartDate(""); // reset to empty
+      }
+    }}
+  />
+  <Label htmlFor="publish" className="text-sm text-gray-700">
+    Publish this course immediately
+  </Label>
+</div>
+
+{/* Start Date Field: only show if not publishing immediately */}
+{!publish && (
+  <div className="mb-6">
+    <Label htmlFor="start-date">Start Date</Label>
+    <Input
+      id="start-date"
+      type="date"
+      value={startDate}
+      onChange={(e) => setStartDate(e.target.value)}
+      className="mt-2"
+    />
+  </div>
+)}
+
 
           <div>
             <Label htmlFor="language">Course Language</Label>
@@ -313,7 +354,7 @@ const handleSaveAndNext = async () => {
 </div>
 
 
-          <div className="flex items-center gap-3">
+          {/* <div className="flex items-center gap-3">
             <Checkbox
               id="publish"
               checked={publish}
@@ -322,7 +363,7 @@ const handleSaveAndNext = async () => {
             <Label htmlFor="publish" className="text-sm text-gray-700">
               Publish this course immediately
             </Label>
-          </div>
+          </div> */}
         </div>
 
       <div className="mt-10 text-right flex justify-end gap-3">

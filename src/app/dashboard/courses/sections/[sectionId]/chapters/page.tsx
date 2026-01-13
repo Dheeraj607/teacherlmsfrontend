@@ -101,20 +101,25 @@ export default function ChapterListPage() {
                 <td className="p-3 border text-center">{index + 1}</td>
                 <td className="p-3 border">{chapter.title}</td>
                 
-                {/* Collapsible Description */}
-                <td className="p-3 border">
-                  {chapter.description.length > 100 && !expanded[chapter.id]
-                    ? `${chapter.description.slice(0, 100)}...`
-                    : chapter.description}
-                  {chapter.description.length > 100 && (
-                    <button
-                      onClick={() => toggleDescription(chapter.id)}
-                      className="ml-2 text-blue-600 hover:underline"
-                    >
-                      {expanded[chapter.id] ? 'Show less' : 'Show more'}
-                    </button>
-                  )}
-                </td>
+               <td className="p-3 border align-top">
+  <div
+    className={`ck-content text-gray-600 text-sm ${
+      expanded[chapter.id] ? '' : 'line-clamp-3'
+    }`}
+    dangerouslySetInnerHTML={{
+      __html: chapter.description || '',
+    }}
+  />
+{/* 
+  {chapter.description?.length > 100 && (
+    <button
+      onClick={() => toggleDescription(chapter.id)}
+      className="mt-1 text-blue-600 hover:underline text-sm"
+    >
+      {expanded[chapter.id] ? 'Show less' : 'Show more'}
+    </button>
+  )} */}
+</td>
 
                 <td className="p-3 border text-center">{chapter.order_index}</td>
 <td className="p-3 border text-center">

@@ -1,43 +1,32 @@
 import { useState, useEffect } from "react";
-import { cancelTokenRefreshTimer } from "@/services/authTimer"; 
-let idleTimeout: NodeJS.Timeout | null = null;
-let logoutCountdownInterval: NodeJS.Timeout | null = null;
 
-export const useIdleTimer = (idleTime = 60 * 60 * 1000, logoutSeconds = 60) => {
+let idleTimeout: NodeJS.Timeout | null = null;
+let warningInterval: NodeJS.Timeout | null = null;
+
+export const useIdleTimer = (
+  idleTime = 60 * 60 * 1000, // 1 hour
+  warningSeconds = 60
+) => {
   const [showWarning, setShowWarning] = useState(false);
-  const [countdown, setCountdown] = useState(logoutSeconds);
+  const [countdown, setCountdown] = useState(warningSeconds);
 
   const resetTimer = () => {
     if (idleTimeout) clearTimeout(idleTimeout);
-    if (logoutCountdownInterval) clearInterval(logoutCountdownInterval);
+    if (warningInterval) clearInterval(warningInterval);
 
     setShowWarning(false);
-    setCountdown(logoutSeconds);
+    setCountdown(warningSeconds);
 
     idleTimeout = setTimeout(() => {
-      console.log("⚠️ User idle detected, starting logout countdown");
+      console.log("⚠️ User idle detected (no auto logout)");
+
       setShowWarning(true);
 
-      logoutCountdownInterval = setInterval(() => {
-        setCountdown((prev) => {
-          console.log(`⏳ Logout in: ${prev}s`);
-          if (prev <= 1) {
-            clearInterval(logoutCountdownInterval!);
-
-            cancelTokenRefreshTimer();   // 🛑 stop refresh
-            localStorage.clear();        // 🧹 clear tokens
-
-            console.log("🔒 Logged out due to inactivity");
-            window.location.href = "/auth/login";
-            return 0;
-          }
-
-          return prev - 1;
-        });
+      warningInterval = setInterval(() => {
+        setCountdown((prev) => (prev > 0 ? prev - 1 : 0));
       }, 1000);
     }, idleTime);
   };
-
 
   useEffect(() => {
     resetTimer();
@@ -47,13 +36,78 @@ export const useIdleTimer = (idleTime = 60 * 60 * 1000, logoutSeconds = 60) => {
 
     return () => {
       if (idleTimeout) clearTimeout(idleTimeout);
-      if (logoutCountdownInterval) clearInterval(logoutCountdownInterval);
+      if (warningInterval) clearInterval(warningInterval);
       events.forEach((e) => window.removeEventListener(e, resetTimer));
     };
   }, []);
 
-  return { showWarning, countdown };
+  return {
+    showWarning, // optional UI warning
+    countdown,   // optional countdown
+    resetTimer,  // expose if needed
+  };
 };
+
+
+
+
+
+// import { useState, useEffect } from "react";
+// import { cancelTokenRefreshTimer } from "@/services/authTimer"; 
+// let idleTimeout: NodeJS.Timeout | null = null;
+// let logoutCountdownInterval: NodeJS.Timeout | null = null;
+
+// export const useIdleTimer = (idleTime = 60 * 60 * 1000, logoutSeconds = 60) => {
+//   const [showWarning, setShowWarning] = useState(false);
+//   const [countdown, setCountdown] = useState(logoutSeconds);
+
+//   const resetTimer = () => {
+//     if (idleTimeout) clearTimeout(idleTimeout);
+//     if (logoutCountdownInterval) clearInterval(logoutCountdownInterval);
+
+//     setShowWarning(false);
+//     setCountdown(logoutSeconds);
+
+//     idleTimeout = setTimeout(() => {
+//       console.log("⚠️ User idle detected, starting logout countdown");
+//       setShowWarning(true);
+
+//       logoutCountdownInterval = setInterval(() => {
+//         setCountdown((prev) => {
+//           console.log(`⏳ Logout in: ${prev}s`);
+//           if (prev <= 1) {
+//             clearInterval(logoutCountdownInterval!);
+
+//             cancelTokenRefreshTimer();   // 🛑 stop refresh
+//             localStorage.clear();        // 🧹 clear tokens
+
+//             console.log("🔒 Logged out due to inactivity");
+//             window.location.href = "/auth/login";
+//             return 0;
+//           }
+
+//           return prev - 1;
+//         });
+//       }, 1000);
+//     }, idleTime);
+//   };
+
+
+//   useEffect(() => {
+//     resetTimer();
+
+//     const events = ["mousemove", "keydown", "scroll", "touchstart"];
+//     events.forEach((e) => window.addEventListener(e, resetTimer));
+
+//     return () => {
+//       if (idleTimeout) clearTimeout(idleTimeout);
+//       if (logoutCountdownInterval) clearInterval(logoutCountdownInterval);
+//       events.forEach((e) => window.removeEventListener(e, resetTimer));
+//     };
+//   }, []);
+
+//   return { showWarning, countdown };
+// };
 
 
 

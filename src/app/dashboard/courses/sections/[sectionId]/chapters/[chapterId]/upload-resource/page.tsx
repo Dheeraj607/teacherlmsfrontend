@@ -1,6 +1,6 @@
 'use client';
 
-import { useParams } from "next/navigation";
+import { useParams ,useSearchParams } from "next/navigation";
 import { useState, useEffect, FormEvent, useRef } from "react";
 import { ArrowUp, ArrowDown, Eye, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -31,6 +31,8 @@ export default function UploadChapterResourcePage() {
     const router = useRouter(); 
   const params = useParams();
   const chapterId = params.chapterId as string;
+const searchParams = useSearchParams();
+const chapterTitle = searchParams.get("chapterTitle") || "";
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const BACKEND_URL = "https://d1ojm6zdv3m37g.cloudfront.net";
@@ -47,6 +49,8 @@ export default function UploadChapterResourcePage() {
   const [resourceTypes, setResourceTypes] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+
+
   const [resourceTypeMap, setResourceTypeMap] = useState<Record<string, number>>({});
   // Fetch resource types and resources
   useEffect(() => {
@@ -290,9 +294,11 @@ const handleMove = async (id: number, direction: "up" | "down") => {
   return (
     <div className="min-h-screen bg-gray-100  p-4 font-sans">
       <div className="bg-white rounded-xl shadow-lg p-8 max-w-4xl w-full">
-        <h2 className="text-3xl font-bold text-gray-800 mb-6">
-          Add Resources for Chapters: <span className="text-blue-600"></span>
-        </h2>
+       <h2 className="text-3xl font-bold text-gray-800 mb-6">
+  Add Resources for Chapter:{' '}
+  <span className="text-blue-600">{chapterTitle}</span>
+</h2>
+
 
         {error && (
           <div className="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 rounded-lg">{error}</div>
@@ -392,13 +398,20 @@ const handleMove = async (id: number, direction: "up" | "down") => {
           )}
 
  <div className="flex justify-end gap-2 mb-4">
-  <button
-    type="button"
-    className="btn btn-secondary"
-    onClick={() => router.back()}
-  >
-    Close
-  </button>
+ <button
+  type="button"
+  className="btn btn-secondary"
+  onClick={() =>
+    router.push(
+      `/dashboard/courses/sections/${params.sectionId}/chapters?courseId=${searchParams.get(
+        "courseId"
+      )}`
+    )
+  }
+>
+  Close
+</button>
+
 
   <button
     type="submit"

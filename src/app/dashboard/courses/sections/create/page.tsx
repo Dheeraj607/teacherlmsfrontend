@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
 import CKEditorInput from "@/app/components/CKEditorInput";
 import { useSearchParams } from "next/navigation";
+import TextEditor from "@/app/components/CKEditorInput";
+
 
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL ||
@@ -27,30 +29,40 @@ function CreateSectionContent() {
     );
   }, [searchParams]);
 
-  const handleSubmit = async () => {
-    if (!title.trim() || !courseId) {
-      alert("Title is required and course ID must be present.");
-      return;
+const handleSubmit = async () => {
+  if (!title.trim() || !courseId) {
+    alert("Title is required and course ID must be present.");
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API_URL}/sections`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title,
+        description: description.trim() || "",
+        order_index: orderIndex,
+        course_id: courseId,
+      }),
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to create section");
     }
 
-    try {
-      await fetch(`${API_URL}/sections`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title,
-          description,
-          order_index: orderIndex,
-          course_id: courseId,
-        }),
-      });
+    const data = await res.json();
+    const sectionId = data.id; // ✅ get the newly created section ID
 
-      router.push(`/dashboard/courses/sections?courseId=${courseId}`);
-    } catch (error) {
-      console.error("Error creating section:", error);
-      alert("Failed to create section. Please try again.");
-    }
-  };
+    router.push(
+      `/dashboard/courses/sections/${sectionId}/chapters?courseId=${courseId}`
+    );
+  } catch (error) {
+    console.error("Error creating section:", error);
+    alert("Failed to create section. Please try again.");
+  }
+};
+
 
   if (!courseId) {
     return (
@@ -65,8 +77,9 @@ function CreateSectionContent() {
   }
 
   return (
-    <div className="p-8 min-h-screen bg-purple-50 font-sans">
-      <div className="max-w-xl mx-auto bg-white p-6 shadow-xl rounded-2xl">
+   <div className="p-8 min-h-screen bg-purple-50 font-sans">
+  <div className="max-w-xl ml-4 bg-white p-6 shadow-xl rounded-2xl">
+
         <h1 className="text-2xl font-bold mb-6 text-purple-800">Create Section</h1>
 
         <div className="mb-4">
@@ -80,20 +93,46 @@ function CreateSectionContent() {
           />
         </div>
 
-        <div className="mb-4">
-          <label className="form-label">Description</label>
-          <CKEditorInput value={description} onChange={setDescription} />
-        </div>
+       {/* Section Description */}
+{/* Section Description */}
+<div className="col-12 mb-4">
+  <label className="form-label font-medium text-purple-700">
+    Section Description <span className="text-red-500">*</span>
+  </label>
+
+  {/* TextEditor inside Bootstrap form-control wrapper */}
+  <div className="form-control p-0" style={{ minHeight: "150px" }}>
+    <TextEditor
+      value={description}
+      onChange={(value: string) => setDescription(value)}
+    />
+  </div>
+
+  {/* Word count validation */}
+  <small className="text-muted block mt-1">
+    Description must be at least 200 words.{" "}
+    {description.trim().split(/\s+/).length < 200 && (
+      <span className="text-red-500 ml-2">
+        
+      </span>
+    )}
+  </small>
+</div>
+
+
 
         <div className="mb-6">
           <label className="form-label">Order Index</label>
-          <input
-            type="number"
-            value={orderIndex}
-            onChange={(e) => setOrderIndex(parseInt(e.target.value) || 1)}
-            className="form-control"
-            min={1}
-          />
+         <input
+  type="number"
+  value={orderIndex === 0 ? "" : orderIndex}
+  onChange={(e) =>
+    setOrderIndex(e.target.value ? parseInt(e.target.value) : 0)
+  }
+  className="form-control"
+  min={1}
+/>
+  
         </div>
 
         <div className="flex justify-end gap-2">

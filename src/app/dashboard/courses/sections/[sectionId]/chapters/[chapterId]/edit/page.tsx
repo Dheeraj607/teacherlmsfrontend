@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import axios from '@/services/api';
+import TextEditor from '@/app/components/TextEditor';
 
 
 export default function ChapterEditPage() {
@@ -81,10 +82,8 @@ useEffect(() => {
 
       alert('✅ Chapter updated successfully!');
 
-      // Redirect to resource upload page
-      router.push(
-        `/dashboard/courses/sections/${sectionId}/chapters/${chapterId}/upload-resource`
-      );
+   router.back();
+
     } catch (err) {
       console.error('❌ Error updating chapter:', err);
       alert('Failed to update chapter');
@@ -119,16 +118,24 @@ useEffect(() => {
             />
           </div>
 
-          <div>
-            <label className="block text-purple-700 font-medium mb-2">Description</label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Enter description"
-              required
-              className="form-control"
-            />
-          </div>
+          <div className="mb-4">
+  <label className="block text-purple-700 font-medium mb-2">
+    Description
+  </label>
+
+  <div className="form-control p-0" style={{ minHeight: '150px' }}>
+    <TextEditor
+      value={description}              // 👈 HTML from API
+      onChange={(value: string) => setDescription(value)}
+      height="250px"
+    />
+  </div>
+
+  <small className="text-gray-500">
+    Write a short description here…
+  </small>
+</div>
+    
 
           <div>
             <label className="block text-purple-700 font-medium mb-2">Duration</label>
