@@ -15,7 +15,7 @@ const CKEditor = dynamic(
     const mod = await import("@ckeditor/ckeditor5-react");
     const ClassicEditor = (await import("@ckeditor/ckeditor5-build-classic")).default;
 
-    return ({ value, onChange, height = "50px" }: TextEditorProps) => (
+    return ({ value, onChange, height = "150px" }: TextEditorProps) => (
       <mod.CKEditor
         editor={ClassicEditor}
         data={value}
