@@ -7,8 +7,9 @@ import api from "@/utils/axiosInstance";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import TextEditor from "@/app/components/TextEditor";
 
-const CKEditorClient = dynamic(() => import("@/app/components/CKEditorClient"), { ssr: false });
+
 
 interface PackageItem {
   id: number;
@@ -205,16 +206,29 @@ export default function EditWebinarPage() {
           />
         </div>
 
-        {/* Description */}
-        <div>
-          <Label>Description</Label>
-          <CKEditorClient
-            value={webinarData.description}
-            onChange={(value: string) =>
-              setWebinarData((prev: any) => ({ ...prev, description: value }))
-            }
-          />
-        </div>
+     {/* Description */}
+<div>
+  <Label>
+    Description <span className="text-red-500">*</span>
+  </Label>
+
+  <div className="form-control p-0" style={{ height: "auto" }}>
+    <TextEditor
+      value={webinarData.description}
+      onChange={(value: string) =>
+        setWebinarData((prev: any) => ({
+          ...prev,
+          description: value,
+        }))
+      }
+    />
+  </div>
+
+  <small className="text-gray-500">
+    Update the webinar description
+  </small>
+</div>
+
 
         {/* Date, Time, Duration */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

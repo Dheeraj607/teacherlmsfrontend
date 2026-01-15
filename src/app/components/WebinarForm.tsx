@@ -574,6 +574,7 @@ import React, { useEffect, useState, ChangeEvent, FormEvent } from 'react';
 import axios from 'axios';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
+import TextEditor from './TextEditor';
 
 const CKEditorClient = dynamic(() => import('@/app/components/CKEditorClient'), { ssr: false });
 
@@ -786,11 +787,28 @@ export default function CreateWebinarPage({ loggedInUserId, onSubmit }: WebinarF
           {errors.title && <p className="text-red-600 text-sm">{errors.title}</p>}
         </div>
 
-        {/* Description */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Description *</label>
-          <CKEditorClient value={description} onChange={setDescription} />
-        </div>
+     {/* Description */}
+<div className="md:col-span-2 mb-4">
+  <label className="font-semibold mb-1 block">
+    Description <span className="text-red-500">*</span>
+  </label>
+
+  <div className="form-control p-0" style={{ height: "auto" }}>
+    <TextEditor
+      value={description}
+      onChange={(value: string) => setDescription(value)}
+    />
+  </div>
+
+  <small className="text-gray-500">
+    Write a short description here…
+  </small>
+
+  {errors.description && (
+    <p className="text-red-600 text-sm mt-1">{errors.description}</p>
+  )}
+</div>
+
 
         {/* Date, Time, Duration */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
