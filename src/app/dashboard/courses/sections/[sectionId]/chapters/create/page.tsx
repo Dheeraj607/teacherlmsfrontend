@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import axios from '@/app/lib/axios';
 import TextEditor from '@/app/components/TextEditor';
@@ -20,6 +20,24 @@ export default function ChapterCreatePage() {
   const [isFreePreview, setIsFreePreview] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    const previousPage = `/dashboard/courses/sections/${sectionId}/chapters?courseId=${courseId}`;
+      sessionStorage.setItem('previousPage', previousPage);
+    window.history.pushState(null, '', window.location.href);
+
+    const handlePopState = () => {
+      // On browser back, go to chapters page
+      router.replace(previousPage);
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [router, sectionId, courseId]);
+
+  const handleClose = () => {
+    const prev = sessionStorage.getItem('previousPage') || '/dashboard/courses';
+    router.push(prev);
+  };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!sectionId || !courseId) return alert('Missing section or course ID');
@@ -116,13 +134,13 @@ export default function ChapterCreatePage() {
   </label>
 
   <div className="flex gap-2">
-    <button
-      type="button"
-      className="btn btn-secondary"
-      onClick={() => router.back()}
-    >
-      Close
-    </button>
+     <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={handleClose}
+              >
+                Close
+              </button>
 
     <button
       type="submit"

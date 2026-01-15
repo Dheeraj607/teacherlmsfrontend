@@ -3,9 +3,10 @@ export const dynamic = 'force-dynamic';
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
-import CKEditorInput from "@/app/components/CKEditorInput";
+
 import { useSearchParams } from "next/navigation";
-import TextEditor from "@/app/components/CKEditorInput";
+import TextEditor from "@/app/components/TextEditor";
+
 
 
 const API_URL =
@@ -28,6 +29,32 @@ function CreateSectionContent() {
       courseIdParam && !isNaN(Number(courseIdParam)) ? Number(courseIdParam) : null
     );
   }, [searchParams]);
+
+useEffect(() => {
+  // Track initial page load
+    window.history.pushState(null, "", window.location.href);
+
+    const handlePopState = () => {
+      router.push("/dashboard/courses"); // fallback if no previous page
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [router]);
+
+
+const handleClose = () => {
+  // Check if we can go back
+  if (window.history.state?.idx > 0) {
+    router.back(); // go back if possible
+  } else {
+    router.push("/dashboard/courses"); // fallback route
+  }
+};
+
 
 const handleSubmit = async () => {
   if (!title.trim() || !courseId) {
@@ -100,11 +127,12 @@ const handleSubmit = async () => {
     Section Description <span className="text-red-500">*</span>
   </label>
 
-  {/* TextEditor inside Bootstrap form-control wrapper */}
+  {/* TextEditor inside a styled wrapper */}
   <div className="form-control p-0" style={{ minHeight: "150px" }}>
     <TextEditor
       value={description}
       onChange={(value: string) => setDescription(value)}
+       // optional: set editor height
     />
   </div>
 
@@ -113,11 +141,12 @@ const handleSubmit = async () => {
     Description must be at least 200 words.{" "}
     {description.trim().split(/\s+/).length < 200 && (
       <span className="text-red-500 ml-2">
-        
+        {/* Currently {description.trim().split(/\s+/).length} words */}
       </span>
     )}
   </small>
 </div>
+
 
 
 
@@ -136,9 +165,10 @@ const handleSubmit = async () => {
         </div>
 
         <div className="flex justify-end gap-2">
-          <button className="btn btn-secondary" onClick={() => router.back()}>
-            Close
-          </button>
+        <button className="btn btn-secondary" onClick={handleClose}>
+  Close
+</button>
+
           <button onClick={handleSubmit} className="btn btn-primary">
             Save and Go to Chapters
           </button>

@@ -44,6 +44,23 @@ export default function CreateCoursePage() {
   const [packageIds, setPackageIds] = useState<number[]>([]);
 
   useEffect(() => {
+  // Push a dummy state so back button always triggers popstate
+  window.history.pushState(null, "", window.location.href);
+
+  const handlePopState = () => {
+    // Redirect to a fallback route if user tries to go back
+    router.push("/dashboard/courses");
+  };
+
+  window.addEventListener("popstate", handlePopState);
+
+  return () => {
+    window.removeEventListener("popstate", handlePopState);
+  };
+}, [router]);
+
+
+  useEffect(() => {
     const token = localStorage.getItem("accessToken");
 
     if (!token) {
@@ -372,10 +389,11 @@ const handleSaveAndNext = async () => {
 <button
   type="button"
   className="btn btn-secondary"
-  onClick={() => window.history.back()}
+  onClick={() => router.push("/dashboard/courses")}
 >
   Close
 </button>
+
 
 
   {/* Save Button */}

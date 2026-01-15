@@ -159,7 +159,16 @@ const [fileError, setFileError] = useState<string | null>(null);
         <button
           type="button"
           className="btn btn-secondary"
-          onClick={() => (onCancel ? onCancel() : router.back())}
+          onClick={() => {
+  if (onCancel) {
+    onCancel();
+  } else if (window.history.length > 1) {
+    router.back(); // go back if there is history
+  } else {
+    router.push("/dashboard/packages"); // fallback route
+  }
+}}
+
         >
           Close
         </button>
