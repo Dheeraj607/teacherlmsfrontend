@@ -66,7 +66,8 @@ export default function LoginPage() {
     };
   }, [router]);
   
-  const handleLogin = async () => {
+  const handleLogin = async (e: React.FormEvent) => {
+  e.preventDefault(); 
     if (!email || !password) {
       toast.error("Please enter both email and password");
       return;
@@ -145,46 +146,51 @@ export default function LoginPage() {
                <h1 className="mb-0 mt-5" style={{ fontWeight: "bold" }}>Welcome Back</h1>
 
                 <h6 className="mb-4">Login to access all your data</h6>
+<form onSubmit={handleLogin}>
+  <div className="col mb-4">
+    <label htmlFor="email" className="form-label">Email address</label>
+    <input
+      type="email"
+      className="form-control"
+      id="email"
+      placeholder="name@example.com"
+      value={email}
+      onChange={(e) => setEmail(e.target.value)}
+      required
+    />
+  </div>
 
-                <div className="col mb-4">
-                  <label htmlFor="email" className="form-label">Email address</label>
-                  <input
-                    type="email"
-                    className="form-control"
-                    id="email"
-                    placeholder="name@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                </div>
+  <div className="col mb-4">
+    <label htmlFor="password" className="form-label">Password</label>
+    <input
+      type="password"
+      className="form-control"
+      id="password"
+      placeholder="Password"
+      value={password}
+      onChange={(e) => setPassword(e.target.value)}
+      required
+    />
+  </div>
 
-                <div className="col mb-4">
-                  <label htmlFor="password" className="form-label">Password</label>
-                  <input
-                    type="password"
-                    className="form-control"
-                    id="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                </div>
+  <div className="col mb-4 d-grid gap-2">
+<button
+  type="submit" // important
+  className={`btn ${loading ? "disabled" : ""}`}
+  style={{
+    borderRadius: "50px",
+    backgroundColor: "#7F00FF",
+    color: "#fff",
+    padding: "0.5rem 1.5rem",
+    border: "none",
+  }}
+>
+  {loading ? "Logging in..." : "Log In"}
+</button>
 
-              <div className="col mb-4 d-grid gap-2">
-  <button
-    className={`btn ${loading ? "disabled" : ""}`}
-    onClick={handleLogin}
-    style={{
-      borderRadius: "50px",       // makes it oval
-      backgroundColor: "#7F00FF", // violet color
-      color: "#fff",              // text color white
-      padding: "0.5rem 1.5rem",   // adjust size
-      border: "none",             // remove default border
-    }}
-  >
-    {loading ? "Logging in..." : "Log In"}
-  </button>
-</div>
+  </div>
+</form>
+
 
 
                 {/* <div className="countinuediv text-center mb-3">
