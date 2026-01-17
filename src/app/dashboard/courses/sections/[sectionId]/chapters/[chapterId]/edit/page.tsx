@@ -22,6 +22,26 @@ export default function ChapterEditPage() {
   const [isFreePreview, setIsFreePreview] = useState(false);
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
+const fallbackUrl = `/dashboard/courses/sections/${sectionId}/chapters?courseId=${courseId}`;
+const goBackSafely = () => {
+  if (window.history.length > 1) {
+    router.back();
+  } else {
+    router.replace(fallbackUrl);
+  }
+};
+
+useEffect(() => {
+  // Ensure this page has a history entry
+  window.history.pushState(null, '', window.location.href);
+
+  const handlePopState = () => {
+    router.replace(fallbackUrl);
+  };
+
+  window.addEventListener('popstate', handlePopState);
+  return () => window.removeEventListener('popstate', handlePopState);
+}, [router, fallbackUrl]);
 
   // Fetch chapter data
 useEffect(() => {
@@ -82,7 +102,8 @@ useEffect(() => {
 
       alert('✅ Chapter updated successfully!');
 
-   router.back();
+   goBackSafely();
+
 
     } catch (err) {
       console.error('❌ Error updating chapter:', err);
@@ -172,11 +193,12 @@ useEffect(() => {
   <div className="flex justify-end mb-4 gap-3">
 <button
   type="button"
-  onClick={() => router.back()}
+  onClick={goBackSafely}
   className="btn btn-secondary"
 >
   Close
 </button>
+
 
 
   <button
