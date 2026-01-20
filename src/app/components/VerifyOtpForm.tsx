@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
 
-export default function VerifyOtpForm() {
+export default function   VerifyOtpForm() {
   const searchParams = useSearchParams();
     const API_URL =
     process.env.NEXT_PUBLIC_API_URL ||

@@ -17,6 +17,7 @@ export default function RegisterForm() {
     email: "",
     phone: "",
     password: "",
+    confirmPassword: "",
     dob: "",
   });
 
@@ -30,6 +31,14 @@ export default function RegisterForm() {
 
 const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
+
+    if (formData.password !== formData.confirmPassword) {
+    setMessage({
+      type: "error",
+      text: " Password and Confirm Password do not match",
+    });
+    return;
+  }
   setLoading(true);
   setMessage(null);
 
@@ -170,6 +179,18 @@ useEffect(() => {
     required
     className="w-full px-3 py-2 border border-white rounded-md bg-transparent text-white placeholder-white focus:outline-none focus:border-blue-300"
   />
+
+<input
+  type="password"
+  name="confirmPassword"
+  placeholder="Confirm Password"
+  value={formData.confirmPassword}
+  onChange={handleChange}
+  required
+  className="w-full px-3 py-2 border border-white rounded-md bg-transparent text-white placeholder-white focus:outline-none focus:border-blue-300"
+/>
+
+
 
 <DatePicker
   selected={formData.dob ? new Date(formData.dob) : null}
