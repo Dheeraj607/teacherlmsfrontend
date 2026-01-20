@@ -67,7 +67,7 @@ export default function ProfilePage() {
   const handleVerifyEmail = async () => {
     try {
       if (form.email === profile.email) {
-        setEmailStatus("This is already your current email.");
+        setEmailStatus("This is already your current mail.");
         return;
       }
 
