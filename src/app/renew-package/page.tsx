@@ -23,9 +23,15 @@ export default function RenewPackagePage() {
 
                 // We'll use the profile and latest-purchased endpoints instead
                 const [profileRes, pkgRes] = await Promise.all([
-                    api.get(`/profile?email=${encodeURIComponent(email)}`).catch(() => ({ data: null })),
-                    api.get(`/admin-packages/latest-purchased?email=${encodeURIComponent(email)}`).catch(() => ({ data: null }))
+                    api.get(`/profile?email=${encodeURIComponent(email)}`),
+                    api.get(`/admin-packages/latest-purchased?email=${encodeURIComponent(email)}`)
                 ]);
+
+                console.log("PROFILE RES STATUS:", profileRes.status);
+                console.log("PROFILE RES DATA:", profileRes.data);
+
+                console.log("PKG RES STATUS:", pkgRes.status);
+                console.log("PKG RES DATA:", pkgRes.data);
 
                 if (profileRes.data || pkgRes.data) {
                     const profileData = profileRes.data;
