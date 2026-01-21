@@ -27,28 +27,28 @@ const SuccessPage: React.FC = () => {
     "http://ec2-13-234-30-113.ap-south-1.compute.amazonaws.com:3000";
 
   // ✅ Delete enrollment if it exists (Cleanup)
-  const deleteEnrollment = async () => {
-    try {
-      const paymentData = localStorage.getItem("paymentData");
-      if (!paymentData) return;
+  // const deleteEnrollment = async () => {
+  //   try {
+  //     const paymentData = localStorage.getItem("paymentData");
+  //     if (!paymentData) return;
 
-      const parsed = JSON.parse(paymentData);
-      const email = parsed.teacher?.email;
+  //     const parsed = JSON.parse(paymentData);
+  //     const email = parsed.teacher?.email;
 
-      if (!email) return;
+  //     if (!email) return;
 
-      // Make this call but don't fail if it's 404 (enrollment might not exist for renewals)
-      await fetch(`${API_URL}/teacher-enrollment/by-email?email=${encodeURIComponent(email)}`, {
-        method: "DELETE",
-      });
+  //     // Make this call but don't fail if it's 404 (enrollment might not exist for renewals)
+  //     await fetch(`${API_URL}/teacher-enrollment/by-email?email=${encodeURIComponent(email)}`, {
+  //       method: "DELETE",
+  //     });
 
-      console.log("Cleanup: Enrollment deletion attempted");
-      localStorage.removeItem("paymentData");
-      localStorage.removeItem("teacherAdminPackageId");
-    } catch (err) {
-      console.warn("Minor: Cleanup error (ignorable):", err);
-    }
-  };
+  //     console.log("Cleanup: Enrollment deletion attempted");
+  //     localStorage.removeItem("paymentData");
+  //     localStorage.removeItem("teacherAdminPackageId");
+  //   } catch (err) {
+  //     console.warn("Minor: Cleanup error (ignorable):", err);
+  //   }
+  // };
 
   // ✅ Trigger renewal to update end date in DB
   const triggerRenewal = async () => {
@@ -76,7 +76,7 @@ const SuccessPage: React.FC = () => {
   useEffect(() => {
     if (transactionId) {
       // Only trigger deletion and renewal when payment is successful
-      deleteEnrollment();
+      // deleteEnrollment();
       // triggerRenewal();
     }
   }, [transactionId]);
