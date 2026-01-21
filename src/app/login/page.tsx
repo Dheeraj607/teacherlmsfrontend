@@ -1,41 +1,8 @@
-// "use client";
-
-// import React from "react";
-// import LoginForm from "@/app/components/LoginForm";
-// import Link from "next/link";
-
-// export default function LoginPage() {
-//   return (
-//     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 via-pink-500 to-red-400 relative">
-//       <div className="absolute inset-0 bg-black/30 backdrop-blur-sm"></div>
-
-//       <div className="relative z-10 w-full max-w-lg bg-white/95 rounded-xl shadow-lg p-8">
-//         <div className="text-center mb-6">
-//           <h3 className="text-gray-500 text-sm">Welcome Back!</h3>
-//           <h2 className="text-2xl font-semibold text-purple-700">
-//             Login to Continue
-//           </h2>
-//         </div>
-
-//         <LoginForm />
-
-//         <p className="text-center text-sm mt-6 text-gray-600">
-//           Don’t have an account?{" "}
-//           <Link href="/" className="text-purple-700 font-semibold">
-//             Register
-//           </Link>
-//         </p>
-//       </div>
-//     </div>
-//   );
-// }
-
-
 "use client";
 import "@/app/css/style.css"; // Adjust the path if different
 
 
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import api from "@/utils/axiosInstance";
 import { toast, ToastContainer } from "react-toastify";
@@ -49,7 +16,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
 
 
- useEffect(() => {
+  useEffect(() => {
     const handlePopState = (e: PopStateEvent) => {
       const token = localStorage.getItem("accessToken");
 
@@ -65,9 +32,9 @@ export default function LoginPage() {
       window.removeEventListener("popstate", handlePopState);
     };
   }, [router]);
-  
+
   const handleLogin = async (e: React.FormEvent) => {
-  e.preventDefault(); 
+    e.preventDefault();
     if (!email || !password) {
       toast.error("Please enter both email and password");
       return;
@@ -102,21 +69,32 @@ export default function LoginPage() {
 
       // Successful login
       if (data.status === "SUCCESS") {
+        localStorage.setItem("accessToken", data.accessToken);
+        localStorage.setItem("refreshToken", data.refreshToken);
+        localStorage.setItem("teacherId", data.teacher.id.toString());
+        localStorage.setItem("teacherName", data.teacher.name);
+        localStorage.setItem("teacherEmail", data.teacher.email);
+
         if (data.redirectStatus === "PAYMENT_PENDING") {
-          toast.warning("Payment not completed yet. Redirecting to payment page.");
+          toast.warning("Payment not completed yet.");
           router.push("/payment-requests");
           return;
         }
 
-        localStorage.setItem("accessToken", data.accessToken);
-        localStorage.setItem("refreshToken", data.refreshToken);
-  localStorage.setItem("teacherId", data.teacher.id.toString());
-  localStorage.setItem("teacherName", data.teacher.name);
-  localStorage.setItem("teacherEmail", data.teacher.email);
-        
+        if (data.redirectStatus === "PLAN_EXPIRED") {
+          toast.warning("Your package plan has expired.");
+          router.push("/renew-package");
+          return;
+        }
+
+        if (data.redirectStatus === "NO_PACKAGE") {
+          toast.info("Please purchase a package to continue.");
+          router.push("/packages");
+          return;
+        }
+
         toast.success("Login successful!");
         router.push("/dashboard");
-        return;
       }
 
       // Catch other statuses
@@ -143,53 +121,53 @@ export default function LoginPage() {
             {/* Left side: Login Form */}
             <div className="col-md-6 d-flex justify-content-center align-items-center">
               <div className="loginarea w-100">
-               <h1 className="mb-0 mt-5" style={{ fontWeight: "bold" }}>Welcome Back</h1>
+                <h1 className="mb-0 mt-5" style={{ fontWeight: "bold" }}>Welcome Back</h1>
 
                 <h6 className="mb-4">Login to access all your data</h6>
-<form onSubmit={handleLogin}>
-  <div className="col mb-4">
-    <label htmlFor="email" className="form-label">Email address</label>
-    <input
-      type="email"
-      className="form-control"
-      id="email"
-      placeholder="name@example.com"
-      value={email}
-      onChange={(e) => setEmail(e.target.value)}
-      required
-    />
-  </div>
+                <form onSubmit={handleLogin}>
+                  <div className="col mb-4">
+                    <label htmlFor="email" className="form-label">Email address</label>
+                    <input
+                      type="email"
+                      className="form-control"
+                      id="email"
+                      placeholder="name@example.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                    />
+                  </div>
 
-  <div className="col mb-4">
-    <label htmlFor="password" className="form-label">Password</label>
-    <input
-      type="password"
-      className="form-control"
-      id="password"
-      placeholder="Password"
-      value={password}
-      onChange={(e) => setPassword(e.target.value)}
-      required
-    />
-  </div>
+                  <div className="col mb-4">
+                    <label htmlFor="password" className="form-label">Password</label>
+                    <input
+                      type="password"
+                      className="form-control"
+                      id="password"
+                      placeholder="Password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                    />
+                  </div>
 
-  <div className="col mb-4 d-grid gap-2">
-<button
-  type="submit" // important
-  className={`btn ${loading ? "disabled" : ""}`}
-  style={{
-    borderRadius: "50px",
-    backgroundColor: "#7F00FF",
-    color: "#fff",
-    padding: "0.5rem 1.5rem",
-    border: "none",
-  }}
->
-  {loading ? "Logging in..." : "Log In"}
-</button>
+                  <div className="col mb-4 d-grid gap-2">
+                    <button
+                      type="submit" // important
+                      className={`btn ${loading ? "disabled" : ""}`}
+                      style={{
+                        borderRadius: "50px",
+                        backgroundColor: "#7F00FF",
+                        color: "#fff",
+                        padding: "0.5rem 1.5rem",
+                        border: "none",
+                      }}
+                    >
+                      {loading ? "Logging in..." : "Log In"}
+                    </button>
 
-  </div>
-</form>
+                  </div>
+                </form>
 
 
 
@@ -197,7 +175,7 @@ export default function LoginPage() {
                   <p><span style={{ background: "#fff", padding: "5px 10px" }}>Continue with</span></p>
                 </div> */}
 
-                  {/* <div className="col mb-4 d-grid gap-2">
+                {/* <div className="col mb-4 d-grid gap-2">
   <button
     className="btn btn-outline-secondary"
     style={{ borderRadius: "50px", padding: "0.5rem 1.5rem" }}
@@ -215,7 +193,7 @@ export default function LoginPage() {
     Login with Facebook
   </button>
 </div> */}
-  {/* Forgot Password Link */}
+                {/* Forgot Password Link */}
                 <div className="col mb-4 text-center">
                   <a
                     href="#"
@@ -234,11 +212,11 @@ export default function LoginPage() {
                 </div>
               </div>
             </div>
-            
+
 
             {/* Right side: Background image */}
-           <div className="col-md-6 loginBg">
-              
+            <div className="col-md-6 loginBg">
+
             </div>
           </div>
         </div>

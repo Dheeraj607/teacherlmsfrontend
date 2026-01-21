@@ -79,92 +79,92 @@ export default function TeacherPaymentRequestPage() {
   };
 
   // Create payment request
- const handlePay = async () => {
-  if (!enrollmentData) return toast.error("❌ No enrollment data available");
+  const handlePay = async () => {
+    if (!enrollmentData) return toast.error("❌ No enrollment data available");
 
-  const teacherAdminPackageId = enrollmentData.teacherAdminPackageId;
-  if (!teacherAdminPackageId) {
-    toast.error("❌ Teacher enrollment ID not found");
-    console.error("Enrollment data missing ID:", enrollmentData);
-    return;
-  }
-
-  const amount = Number(enrollmentData.packagePrice);
-
-  try {
-    setLoading(true);
-
-if (amount <= 0) {
-  // ✅ Free package: create successful payment request directly
-  const res = await fetch(`${API_URL}/payment-requests/free`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      studentTeacherPackageId: teacherAdminPackageId,
-      amount: 0, // <- include this
-      purpose: enrollmentData.packageName,
-      type: "teacher",
-      customer_name: enrollmentData.teacherName,
-      customer_email: enrollmentData.teacherEmail,
-      customer_phone: enrollmentData.teacherPhone,
-    }),
-  });
-
-  const data = await res.json();
-  console.log("Free payment created:", data);
-
-  toast.success("✅ Free package registered successfully!");
-  window.location.href = "/payment-success";
-  return;
-}
-  
-
-    // 💳 Paid package: proceed with normal payment flow
-    const body = {
-      studentTeacherPackageId: teacherAdminPackageId,
-      externalId: Number(teacherAdminPackageId),
-      amount,
-      gst: 0,
-      basicamount: amount,
-      successUrl: window.location.origin + "/payment-success",
-      failureUrl: window.location.origin + "/payment-failed",
-      purpose: enrollmentData.packageName,
-      vendor_name: "Vendor A",
-      vendor_address: "123 Business Street",
-      vendor_email: "vendor@example.com",
-      vendor_contact_no: "9876543210",
-      vendor_gst_no: "22ABCDE1234F2Z5",
-      customer_name: enrollmentData.teacherName,
-      customer_email: enrollmentData.teacherEmail,
-      customer_phone: enrollmentData.teacherPhone,
-      customer_address: "",
-      type: "teacher",
-    };
-
-    console.log("Creating payment order:", body);
-
-    const res = await fetch(`${API_URL}/payment-requests/order`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-
-    const data = await res.json();
-    console.log("Payment order response:", data);
-
-    if (data.paymentRequest?.transaction_id) {
-      toast.success("✅ Payment order created!");
-      window.location.href = `/make-payment?transactionId=${data.paymentRequest.transaction_id}&teacherAdminPackageId=${teacherAdminPackageId}`;
-    } else {
-      toast.error("❌ Could not create payment order");
+    const teacherAdminPackageId = enrollmentData.teacherAdminPackageId;
+    if (!teacherAdminPackageId) {
+      toast.error("❌ Teacher enrollment ID not found");
+      console.error("Enrollment data missing ID:", enrollmentData);
+      return;
     }
-  } catch (err) {
-    console.error(err);
-    toast.error("❌ Error processing payment");
-  } finally {
-    setLoading(false);
-  }
-};
+
+    const amount = Number(enrollmentData.packagePrice);
+
+    try {
+      setLoading(true);
+
+      if (amount <= 0) {
+        // ✅ Free package: create successful payment request directly
+        const res = await fetch(`${API_URL}/payment-requests/free`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            studentTeacherPackageId: teacherAdminPackageId,
+            amount: 0, // <- include this
+            purpose: enrollmentData.packageName,
+            type: "teacher",
+            customer_name: enrollmentData.teacherName,
+            customer_email: enrollmentData.teacherEmail,
+            customer_phone: enrollmentData.teacherPhone,
+          }),
+        });
+
+        const data = await res.json();
+        console.log("Free payment created:", data);
+
+        toast.success("✅ Free package registered successfully!");
+        window.location.href = "/payment-success";
+        return;
+      }
+
+
+      // 💳 Paid package: proceed with normal payment flow
+      const body = {
+        studentTeacherPackageId: teacherAdminPackageId,
+        externalId: Number(teacherAdminPackageId),
+        amount,
+        gst: 0,
+        basicamount: amount,
+        successUrl: window.location.origin + "/payment-success",
+        failureUrl: window.location.origin + "/payment-failed",
+        purpose: enrollmentData.packageName,
+        vendor_name: "Vendor A",
+        vendor_address: "123 Business Street",
+        vendor_email: "vendor@example.com",
+        vendor_contact_no: "9876543210",
+        vendor_gst_no: "22ABCDE1234F2Z5",
+        customer_name: enrollmentData.teacherName,
+        customer_email: enrollmentData.teacherEmail,
+        customer_phone: enrollmentData.teacherPhone,
+        customer_address: "",
+        type: "teacher",
+      };
+
+      console.log("Creating payment order:", body);
+
+      const res = await fetch(`${API_URL}/payment-requests/order`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+
+      const data = await res.json();
+      console.log("Payment order response:", data);
+
+      if (data.paymentRequest?.transaction_id) {
+        toast.success("✅ Payment order created!");
+        window.location.href = `/make-payment?transactionId=${data.paymentRequest.transaction_id}&teacherAdminPackageId=${teacherAdminPackageId}`;
+      } else {
+        toast.error("❌ Could not create payment order");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("❌ Error processing payment");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="max-w-md mx-auto mt-12 p-6 bg-white rounded-xl shadow space-y-4">
