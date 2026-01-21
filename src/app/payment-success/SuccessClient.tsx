@@ -61,13 +61,13 @@ const SuccessPage: React.FC = () => {
       const res = await api.post("/admin-packages/renew");
       if (res.status === 200 || res.status === 201) {
         console.log("✅ Package end date updated successfully");
-        setRenewalMessage("✅ Package extended successfully!");
+        // setRenewalMessage("✅ Package extended successfully!");
       } else {
         setRenewalMessage("⚠️ Payment success, but renewal update failed. Please contact support.");
       }
     } catch (err: any) {
       console.error("❌ Error triggering renewal:", err);
-      setRenewalMessage("❌ Failed to update end date. Please contact support.");
+      // setRenewalMessage("❌ Failed to update end date. Please contact support.");
     } finally {
       setIsRenewing(false);
     }
