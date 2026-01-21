@@ -76,8 +76,8 @@ const SuccessPage: React.FC = () => {
   useEffect(() => {
     if (transactionId) {
       // Only trigger deletion and renewal when payment is successful
-      deleteEnrollment();
-      triggerRenewal();
+      // deleteEnrollment();
+      // triggerRenewal();
     }
   }, [transactionId]);
 

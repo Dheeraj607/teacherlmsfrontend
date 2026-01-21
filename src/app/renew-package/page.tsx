@@ -123,7 +123,7 @@ export default function RenewPackagePage() {
                         <p>Loading enrollment details...</p>
                     ) : (
                         <>
-                            {/* {enrollmentData && (
+                            {enrollmentData && (
                                 <div className="mb-4 p-3 bg-light border rounded">
                                     <p className="mb-1 font-bold">
                                         Package: {enrollmentData.packageName || "N/A"}
@@ -135,7 +135,7 @@ export default function RenewPackagePage() {
                                         Account: {enrollmentData.teacherEmail}
                                     </p>
                                 </div>
-                            )} */}
+                            )}
                             <button
                                 className="btn btn-primary px-4 py-2"
                                 onClick={handleRenew}
