@@ -76,7 +76,7 @@ const SuccessPage: React.FC = () => {
   useEffect(() => {
     if (transactionId) {
       // Only trigger deletion and renewal when payment is successful
-      // deleteEnrollment();
+      deleteEnrollment();
       // triggerRenewal();
     }
   }, [transactionId]);
@@ -122,9 +122,9 @@ const SuccessPage: React.FC = () => {
         Your Transaction ID: <strong>{transactionId}</strong>
       </p>
 
-      <p style={{ ...styles.text, color: renewalMessage.includes("✅") ? "green" : "orange", fontWeight: "bold" }}>
+      {/* <p style={{ ...styles.text, color: renewalMessage.includes("✅") ? "green" : "orange", fontWeight: "bold" }}>
         {isRenewing ? "⏳ Updating your account..." : renewalMessage}
-      </p>
+      </p> */}
 
       {transactionId && (
         <button onClick={downloadInvoice} style={styles.button}>
