@@ -208,9 +208,9 @@ export default function LoginPage() {
                   </a>
                 </div>
 
-                <div className="col mb-4 text-center">
+                {/* <div className="col mb-4 text-center">
                   <p>Don't have an account? <a href="/registerlogin">Register</a></p>
-                </div>
+                </div> */}
               </div>
             </div>
 
