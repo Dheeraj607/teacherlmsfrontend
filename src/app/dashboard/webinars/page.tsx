@@ -252,14 +252,15 @@ const fetchWebinars = async () => {
    {/* Manage Resource & Join Webinar Buttons */}
 <div className="mt-3 grid grid-cols-2 gap-2">
   {/* Resources Button */}
-  <button
-    onClick={() =>
-      router.push(`/dashboard/webinars/upload-resource?webinarId=${webinar.id}`)
-    }
-    className="w-full px-3 py-2 bg-gray-800 text-white rounded-lg text-sm font-medium hover:bg-gray-900 transition"
-  >
-    Resources
-  </button>
+<button
+  onClick={() =>
+    router.push(`/dashboard/webinars/upload-resource?webinarId=${webinar.id}`)
+  }
+  className="w-full !px-2 py-2 bg-gray-800 text-white rounded-lg text-sm font-medium hover:bg-gray-900 transition"
+>
+  Resources
+</button>
+
 
   {/* Join Webinar Button */}
   {webinar.meetingLink && (
